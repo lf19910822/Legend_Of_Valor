@@ -1,0 +1,9 @@
+
+C	C	M	C	W	C	W	M
+F	W	F	F	W	C	W	C
+C	C	W	C	W	C	F	C
+F	C	C	C	C	C	W	W
+C	W	C	C	C	C	C	C
+C	F	M	C	W	F	W	C
+W	C	W	F	W	C	C	C
+M	C	C	C	W	M	W	G
