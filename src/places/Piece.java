@@ -15,7 +15,7 @@ public class Piece{
         col = 0;
     }
 
-    Piece(String sign, int row, int col, String color, String placeType ) {
+    public Piece(String sign, int row, int col, String color, String placeType ) {
         this.color = color;
         this.sign = this.color + sign + ColorsCodes.RESET;
         this.placeType = placeType;
