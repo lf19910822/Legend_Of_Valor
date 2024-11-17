@@ -14,6 +14,10 @@ public class Board {                        // A class that represent a board
     protected List<herosGroup> heroesGroups;
     protected List<aMonster> monsterGroups;
 
+    protected List<aMonster> monstersInLine1;
+    protected List<aMonster> monstersInLine2;
+    protected List<aMonster> monstersInLine3;
+
     Board(int boardCol, int boardRow) {
         this.boardCol = boardCol;
         this.boardRow = boardRow;
@@ -176,6 +180,10 @@ public class Board {                        // A class that represent a board
             return true;
         }
         return false;
+    }
+
+    public boolean isOutOfBoard(int row, int col){
+        return row < 0 || row >= boardRow || col < 0 || col >= boardCol;
     }
 
 

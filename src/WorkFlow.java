@@ -135,6 +135,7 @@ public class WorkFlow {
             }
 
         }
+        this.rounds++;
         return moveResult;
     }
 
@@ -148,7 +149,28 @@ public class WorkFlow {
             }
             return this.herosgroup.get(result - 1);
         }
+    }
 
+    private boolean oneHeroReborn(herosGroup hg){   //  hg is the hero that needs to be reborn
+        Human hero = hg.getGroup().get(0);
+        int heroIndex = this.herosgroup.indexOf(hg);
+        int col = 1 + 3 * heroIndex;
+        if( hero.isAlive() ){
+            System.out.println("hero " + hero.getName() + " is still alive");
+            return false;
+        }
+        hero.setAlive(true);
+        hero.setNowaHP(hero.getHP());
+        Cell bornCell = cells[7][col];
+        Piece top = bornCell.peekTopPiece();
+        if( top.getPlaceType().equals("monster") || bornCell.getStack().size() >= 4 ){; // a hero cannot reborn at a place with a monster
+            System.out.println("Cannot reborn here");                                   // or a cell already has 2 characters.
+            return false;
+        }
+        hg.setRowAndCol(7, col);
+        bornCell.pushPiece(hg);
+
+        return true;
     }
 
 
@@ -163,16 +185,46 @@ public class WorkFlow {
         System.out.println("Q: Quit");
     }
 
-    public Piece HeroMeetAPlace(herosGroup hero, int newRow, int newCol){
+    public Piece HeroMeetAPlace(herosGroup hg, int newRow, int newCol){
         Piece place = this.cells[newRow][newCol].peekTopPiece();
-        int oldRow = hero.getRow();
-        int oldCol = hero.getCol();
+        int oldRow = hg.getRow();
+        int oldCol = hg.getCol();
+        Cell oldCell = this.cells[oldRow][oldCol];
+        Cell newCell = this.cells[newRow][newCol];
+
         if(place.getPlaceType().equals("wall")){
 //            return workFlowInMeetingAPlace(place, hero);
         }
-        hero.setRowAndCol(newRow, newCol);
+
+        if( newRow == oldRow - 1 ){     // want to move on? we need to check if there is a monster above
+            if( !this.board.isOutOfBoard( newRow, newCol + 1 ) ){
+                if( this.cells[newRow][newCol + 1].peekTopPiece().getPlaceType().equals("monster") ){
+                    System.out.println("You cannot move on, there is a monster besides");
+                    toolClass.pauseFlow();
+                    return place;
+                }
+            }
+            if( !this.board.isOutOfBoard( newRow, newCol - 1 ) ){
+                if( this.cells[newRow][newCol - 1].peekTopPiece().getPlaceType().equals("monster") ){
+                    System.out.println("You cannot move on, there is a monster besides");
+                    toolClass.pauseFlow();
+                    return place;
+                }
+            }
+        }
+
+        hg.setRowAndCol(newRow, newCol);
+        herosGroup topHG = (herosGroup) oldCell.peekTopPiece();
+        Human topHero = topHG.getGroup().get(0);
+        if( !topHero.getName().equals(hg.getGroup().get(0).getName()) ){  // the moving hero is under the top hero in
+            oldCell.removeTopPiece();                                     // the stack
+            oldCell.removeTopPiece();
+            newCell.pushPiece(hg);
+            oldCell.pushPiece(topHG);
+            return place;
+        }
         this.cells[oldRow][oldCol].removeTopPiece();
-        this.cells[newRow][newCol].pushPiece(hero);
+        this.cells[newRow][newCol].pushPiece(hg);
 //        return workFlowInMeetingAPlace(place, this.herosgroup);
         return place;
     }

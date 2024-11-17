@@ -9,6 +9,7 @@ public class Character {
     private int Strength;
     private int Agility;
     private int level;
+    private int deadRound;
     private int color;
     protected boolean isAlive;
 
@@ -18,6 +19,7 @@ public class Character {
         this.Strength = Strength;
         this.Agility = Agility;
         this.level = level;
+        this.deadRound = 0;
     }
 
     Character(Character other){
@@ -26,11 +28,16 @@ public class Character {
         this.Strength = other.Strength;
         this.Agility = other.Agility;
         this.level = other.level;
+        this.deadRound = 0;
     }
 
+    public int getDeadRound() {
+        return deadRound;
+    }
 
-
-
+    public void setDeadRound(int deadRound) {
+        this.deadRound = deadRound;
+    }
 
     public String getName() {
         return name;
