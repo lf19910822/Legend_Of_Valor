@@ -274,7 +274,7 @@ public class Battle {
             default:
                 break;
         }
-        damage = Formulas.getDamageOnMonster(monster, damage, 0.8);
+        damage = Formulas.getDamageOnMonster(monster, damage, 0.2);
         System.out.println("Hero " + human.getName() + " attacked " + monster.getName() + " with " +
                 ColorsCodes.RED + damage + ColorsCodes.RESET + " damage");
         monster.beAttacked(damage);

@@ -37,11 +37,19 @@ public class Cell {                 // A cell class that represent every cell on
     }
 
     public boolean isEmpty(){
-        if(Objects.equals(peekTopPiece().getPlaceType(), "common")){
+        if(Objects.equals(this.peekTopPiece().getPlaceType(), "common")){
             return true;
         }
         return false;
     }
+
+    public String getTopPieceType(){
+        if( !pieceStack.isEmpty() ){
+            return pieceStack.peekFirst().getPlaceType();
+        }
+        return "null";
+    }
+
 
     public void pushPiece(Piece piece){
         this.pieceStack.offerFirst(piece);

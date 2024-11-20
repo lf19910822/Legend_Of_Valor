@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import Characters.*;
@@ -19,7 +20,8 @@ public class WorkFlow {
     List<aMonster> monsterGroup;
     CharacterMaps chMaps;
 
-    protected int rounds = 0;
+    protected int rounds;
+    protected int herosIndex;           // herosIndex %= 3, 0 1 2 means h1, h2, h3 to move
     boolean mainQuit = false;
 
 
@@ -30,6 +32,8 @@ public class WorkFlow {
         this.herosgroup = board.getHerosGroup();
         this.monsterGroup = board.getMonsterGroup();
         this.chMaps = new CharacterMaps();
+        this.rounds = 1;
+        this.herosIndex = 0;
     }
 
     public void startGame(){
@@ -39,7 +43,7 @@ public class WorkFlow {
         pickOneHeroFlow();
         System.out.println("Enter HELP on the map for controlling help:");
 
-        board.printBoard();
+//        board.printBoard();
         Piece moveResult = controls();
     }
 
@@ -48,7 +52,8 @@ public class WorkFlow {
         Piece moveResult = null;
         boolean quit = false;
         while(!quit && !this.mainQuit){
-
+            System.out.println("Round " + this.rounds);
+            board.printBoard();
             herosGroup currentHero = selectOneHeroPiece();
             int oldRow = currentHero.getRow();
             int oldCol = currentHero.getCol();
@@ -129,26 +134,77 @@ public class WorkFlow {
                     break;
             }
 
-            if( !this.mainQuit ){
-                this.board.printBoard();
-//                printHelp();
+            if( this.herosIndex == 3 ){
+                this.rounds++;
+                AllMonstersMove();
+                this.herosIndex = 0;
             }
 
         }
-        this.rounds++;
         return moveResult;
     }
 
-    private herosGroup selectOneHeroPiece(){
-        while(true){
-            System.out.println("Please select a hero to move: ");
-            System.out.println("h1: 1    h2: 2    h3: 3");
-            int result = toolClass.getAnIntInput(1, 3);
-            if( result == -1 ){
+    private void AllMonstersMove(){
+        for( aMonster monster : this.monsterGroup ){
+            int row = monster.getRow();
+            int col = monster.getCol();
+            List<Cell> moveTargets = getMoveTargetOfAMonster(monster);
+            if(moveTargets.isEmpty())
+                continue;
+
+            Cell moveTarget = toolClass.getRandomValueFromList(moveTargets);
+            if( moveTarget.getTopPieceType().equals("group") ){
+                // BATTLE!!!!!!
+
+
+
+
+
+
+
+            } else{
+                this.cells[row][col].removeTopPiece();
+//                this.cells[moveTarget.getRow()][moveTarget.getCol()].pushPiece(monster);    // ???Is moveTarget in this.cell?
+                moveTarget.pushPiece(monster);
+                monster.setRowAndCol(moveTarget.getRow(), moveTarget.getCol());
+            }
+        }
+    }
+
+    private List<Cell> getMoveTargetOfAMonster(aMonster monsterPiece){
+        List<Cell> moveTargets = getCellsAroundOneChara(monsterPiece, 4);
+        moveTargets.removeIf(cell -> cell.getTopPieceType().equals("wall") || cell.getTopPieceType().equals("monster"));
+        return moveTargets;
+    }
+
+
+    private List<Cell> getCellsAroundOneChara( Piece me, int numDirections ){  // check target directions,
+        List<Cell> neighbors = new ArrayList<>();                                  // return all target characters.
+        int row = me.getRow();
+        int col = me.getCol();
+        int[][] Direction = new int[0][0];
+        if( numDirections == 4 ){
+            Direction = toolClass.directions4;
+        } else{
+            Direction = toolClass.directions8;
+        }
+
+        for( int[] direction : Direction ){
+            int newRow = row + direction[0];
+            int newCol = col + direction[1];
+            if( this.board.isOutOfBoard(newRow, newCol) ){
                 continue;
             }
-            return this.herosgroup.get(result - 1);
+            neighbors.add(this.cells[newRow][newCol]);
         }
+        return neighbors;
+    }
+
+    private herosGroup selectOneHeroPiece(){
+        System.out.println("Now it's hero h" + (this.herosIndex + 1) + "'s turn to move");
+        herosGroup result = this.herosgroup.get(this.herosIndex);
+        this.herosIndex++;                      // 0, 1, 2, 3. 3 means all heroes have moved.
+        return result;
     }
 
     private boolean oneHeroReborn(herosGroup hg){   //  hg is the hero that needs to be reborn
@@ -185,6 +241,18 @@ public class WorkFlow {
         System.out.println("Q: Quit");
     }
 
+    public boolean checkMonster( int row, int col ){    // check if there is a monster in target place
+        if( !this.board.isOutOfBoard( row, col ) ){
+            if( this.cells[row][col].peekTopPiece().getPlaceType().equals("monster") ){
+                System.out.println("You cannot move on, there is a monster besides");
+                toolClass.pauseFlow();
+                return true;
+            }
+        }
+        return false;
+
+    }
+
     public Piece HeroMeetAPlace(herosGroup hg, int newRow, int newCol){
         Piece place = this.cells[newRow][newCol].peekTopPiece();
         int oldRow = hg.getRow();
@@ -194,23 +262,18 @@ public class WorkFlow {
 
         if(place.getPlaceType().equals("wall")){
 //            return workFlowInMeetingAPlace(place, hero);
+        } else if( place.getPlaceType().equals("group")){
+//            return workFlowInMeetingAPlace(place, hero);
         }
 
         if( newRow == oldRow - 1 ){     // want to move on? we need to check if there is a monster above
-            if( !this.board.isOutOfBoard( newRow, newCol + 1 ) ){
-                if( this.cells[newRow][newCol + 1].peekTopPiece().getPlaceType().equals("monster") ){
-                    System.out.println("You cannot move on, there is a monster besides");
-                    toolClass.pauseFlow();
-                    return place;
-                }
+            if( checkMonster(newRow, newCol - 1) || checkMonster(newRow, newCol + 1) ){
+                return place;
             }
-            if( !this.board.isOutOfBoard( newRow, newCol - 1 ) ){
-                if( this.cells[newRow][newCol - 1].peekTopPiece().getPlaceType().equals("monster") ){
-                    System.out.println("You cannot move on, there is a monster besides");
-                    toolClass.pauseFlow();
-                    return place;
-                }
+            if( checkMonster(oldRow, oldCol + 1) || checkMonster(oldRow, oldCol - 1) ){
+                return place;
             }
+
         }
 
         hg.setRowAndCol(newRow, newCol);
@@ -258,7 +321,7 @@ public class WorkFlow {
 //                if( choose == 1 ){
 //                    Market market = Market.getMarket();
 //                    for(Human buyer : hgAfterMove.getGroup()){
-//                        System.out.println("Welcome to the market！The buyer now is: " + buyer.getName());
+//                        System.out.println("Welcome to the market! The buyer now is: " + buyer.getName());
 //                        market.marketWorkFlow(buyer);
 //                    }
 //                }
@@ -299,7 +362,7 @@ public class WorkFlow {
                 System.out.println("The story unfolds......");
                 break;
             }
-            System.out.println("You have picked " + count + "/3 heroes");
+            System.out.println("You have picked " + count + "/3 heroes, this hero is in line " + (count + 1));
             System.out.println("Please pick a hero from the following list:");
             System.out.println("1. Warrior");
             System.out.println("2. Sorcerer");
