@@ -50,6 +50,17 @@ public class Cell {                 // A cell class that represent every cell on
         return "null";
     }
 
+    public Piece peekSecondPiece(){
+        if( pieceStack.size() < 2 ){
+            System.out.println("Error: No enough pieces in the stack.");
+            return null;
+        }
+        Piece top = pieceStack.pollFirst();
+        Piece below = pieceStack.peekFirst();
+        pieceStack.offerFirst(top);
+        return below;
+    }
+
 
     public void pushPiece(Piece piece){
         this.pieceStack.offerFirst(piece);

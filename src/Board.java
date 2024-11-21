@@ -46,9 +46,9 @@ public class Board {                        // A class that represent a board
         this.cells[7][4].pushPiece(h2);
         this.cells[7][7].pushPiece(h3);
 
-        aMonster m1 = new aMonster("M1", 0, 1, ColorsCodes.YELLOW);
-        aMonster m2 = new aMonster("M2", 0, 4, ColorsCodes.YELLOW);
-        aMonster m3 = new aMonster("M3", 0, 7, ColorsCodes.YELLOW);
+        aMonster m1 = new aMonster("M ", 0, 1, ColorsCodes.YELLOW);
+        aMonster m2 = new aMonster("M ", 0, 4, ColorsCodes.YELLOW);
+        aMonster m3 = new aMonster("M ", 0, 7, ColorsCodes.YELLOW);
 
         this.monsterGroups.add(m1);
         this.monsterGroups.add(m2);
@@ -168,7 +168,7 @@ public class Board {                        // A class that represent a board
             String cellType = cells[row][j].getCellType();
             System.out.print("  " + cellType + " - " + cellType + " - " + cellType);
         }
-        System.out.println();System.out.println();
+        System.out.println();
 
     }
 

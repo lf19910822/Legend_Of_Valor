@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import Colors.ColorsCodes;
 import Items.*;
+import tool.toolClass;
 
 public class Human extends Character {
     private int EXP;
@@ -366,6 +367,124 @@ public class Human extends Character {
         this.deleteItem(item);
     }
 
+    public boolean takeOffAllArmory(){
+        if( this.ArmoryOnBody.isEmpty()){
+            System.out.println("You have no armory on body");
+            return false;
+        } else{
+            this.ArmoryOnBody.clear();
+            return true;
+        }
+    }
+
+    public boolean takeOffAllWeapon(){
+        if( this.weaponsOnHand.isEmpty()){
+            System.out.println("You have no weapon on hand");
+            return false;
+        } else{
+            this.weaponsOnHand.clear();
+            return true;
+        }
+    }
+
+    public boolean pickArmoryOrWeaponByOneHero(){
+        Human hero = this;
+        List<Items> ArmoryOrWeapon = new ArrayList<>();
+        ArmoryOrWeapon.addAll(hero.getWeaponList());
+        ArmoryOrWeapon.addAll(hero.getArmoryList());
+        if( ArmoryOrWeapon.size() <= 0 ){
+            System.out.println("Hero " + hero.getName() + " has no weapon or armory available");
+            toolClass.pauseFlow();
+            return false;
+        }
+
+
+        boolean quit = false;
+        printArmoryAndWeapon(ArmoryOrWeapon);
+        while(!quit){
+            System.out.println("Choose an item to pick, or type 'q' to quit");
+            String input = toolClass.scanner.nextLine();
+            if( input.equals("q")){
+                return false;
+            } else if( toolClass.checkInput(input, 0, ArmoryOrWeapon.size() - 1)){
+                int index = Integer.parseInt(input);
+                Items item = ArmoryOrWeapon.get(index);
+
+                if( item instanceof Weapon){
+                    if(hero.pickAWeapon((Weapon) item)){
+                        ArmoryOrWeapon.remove(item);
+                        System.out.println("Hero " + hero.getName() + " picked weapon " + item.getName());
+                    }
+                } else if( item instanceof Armory){
+                    if(hero.pickAnArmory((Armory) item)){
+                        ArmoryOrWeapon.remove(item);
+                        System.out.println("Hero " + hero.getName() + " picked armory " + item.getName());
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void printArmoryAndWeapon(List<Items> ArmoryOrWeapon){
+        System.out.println(ColorsCodes.RED);
+        System.out.println("Weapons:");
+        System.out.println(Weapon.header);
+        for( Items item : ArmoryOrWeapon){
+            if( item instanceof Weapon){
+                System.out.println(item + "\t" + ArmoryOrWeapon.indexOf(item));
+            }
+        }
+        System.out.println(ColorsCodes.RESET);
+
+        System.out.println(ColorsCodes.GREEN);
+        System.out.println("Armories:");
+        System.out.println(Armory.header);
+        for( Items item : ArmoryOrWeapon){
+            if( item instanceof Armory){
+                System.out.println(item + "\t" + ArmoryOrWeapon.indexOf(item));
+            }
+        }
+        System.out.println(ColorsCodes.RESET);
+    }
+
+    public boolean selectAndUseAPotion(){
+        Human hero = this;
+        printPotion();
+        if(hero.getPotionList().isEmpty()){
+            System.out.println("Hero " + hero.getName() + " has no potion available");
+            toolClass.pauseFlow();
+            return false;
+        }
+        System.out.println("Choose a potion to use, or type 'q' to quit");
+        String input = toolClass.scanner.nextLine();
+        if( input.equals("q")){
+            return false;
+        } else if( toolClass.checkInput(input, 0, hero.getPotionList().size() - 1)){
+            int index = Integer.parseInt(input);
+            Potion potion = hero.getPotionList().get(index);
+            hero.usePotion(potion);
+            System.out.println("Hero " + hero.getName() + " used potion " + potion.getName());
+            hero.printNowaInformation();
+            hero.deleteItem(potion);
+            return true;
+        }
+        return false;
+    }
+
+    public void printPotion() {
+        Human hero = this;
+        List<Potion> potions = hero.getPotionList();
+        int count = 0;
+        System.out.println(ColorsCodes.CYAN);
+        System.out.println(Potion.header);
+        for( Potion potion : potions){
+            System.out.println(potion.toString() + "\t" + count);
+            count++;
+        }
+        System.out.println(ColorsCodes.RESET);
+    }
 
 
 

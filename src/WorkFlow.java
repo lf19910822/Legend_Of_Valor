@@ -23,7 +23,8 @@ public class WorkFlow {
     protected int rounds;
     protected int herosIndex;           // herosIndex %= 3, 0 1 2 means h1, h2, h3 to move
     boolean mainQuit = false;
-
+    protected herosGroup currentHero;
+    Battle battle;
 
 
     WorkFlow(){
@@ -34,6 +35,11 @@ public class WorkFlow {
         this.chMaps = new CharacterMaps();
         this.rounds = 1;
         this.herosIndex = 0;
+
+        for( aMonster monsterPiece : this.monsterGroup ){
+            Monster monster = getRandomMonster();
+            monsterPiece.setMonster(monster);
+        }
     }
 
     public void startGame(){
@@ -44,17 +50,34 @@ public class WorkFlow {
         System.out.println("Enter HELP on the map for controlling help:");
 
 //        board.printBoard();
-        Piece moveResult = controls();
+        controls();
     }
 
-    public Piece controls(){
+    public void controls(){
         int count = 0;
-        Piece moveResult = null;
+        boolean moveResult = true;
         boolean quit = false;
+        boolean reSelect = true;
         while(!quit && !this.mainQuit){
-            System.out.println("Round " + this.rounds);
             board.printBoard();
-            herosGroup currentHero = selectOneHeroPiece();
+            System.out.println("Round " + this.rounds);
+
+            if( reSelect ){
+                this.currentHero = selectOneHeroPiece();
+                System.out.println("Now it's hero H" + (this.herosIndex + 1) + "'s turn to move");
+                this.herosIndex++;
+            } else{
+                this.herosIndex--;
+                this.currentHero = selectOneHeroPiece();
+                System.out.println("Now it's hero H" + (this.herosIndex + 1) + "'s turn to move");
+                this.herosIndex++;
+                reSelect = true;
+            }
+
+            if( this.rounds % 3 == 0 ){
+                generateMonsters();
+            }
+//            herosGroup currentHero = selectOneHeroPiece();
             int oldRow = currentHero.getRow();
             int oldCol = currentHero.getCol();
             int newRow;
@@ -72,6 +95,12 @@ public class WorkFlow {
                         break;
                     } else{
                         moveResult = HeroMeetAPlace(currentHero, newRow, newCol);
+
+                        if( !moveResult ){
+                            toolClass.pauseFlow();
+                            reSelect = false;
+                            continue;
+                        }
                     }
 //                    quit = true;
                     break;
@@ -82,6 +111,12 @@ public class WorkFlow {
                         break;
                     } else{
                         moveResult = HeroMeetAPlace(currentHero, newRow, newCol);
+
+                        if( !moveResult ){
+                            toolClass.pauseFlow();
+                            reSelect = false;
+                            continue;
+                        }
                     }
 //                    quit = true;
                     break;
@@ -92,6 +127,12 @@ public class WorkFlow {
                         break;
                     } else{
                         moveResult = HeroMeetAPlace(currentHero, newRow, newCol);
+
+                        if( !moveResult ){
+                            toolClass.pauseFlow();
+                            reSelect = false;
+                            continue;
+                        }
                     }
 //                    quit = true;
                     break;
@@ -102,36 +143,46 @@ public class WorkFlow {
                         break;
                     } else{
                         moveResult = HeroMeetAPlace(currentHero, newRow, newCol);
+
+                        if( !moveResult ){
+                            toolClass.pauseFlow();
+                            reSelect = false;
+                            continue;
+                        }
                     }
 
                     break;
                 case "I":
                     printGroupInformation();
                     toolClass.pauseFlow();
-                    break;
+                    continue;
                 case "Q":
                     this.mainQuit = true;
-
+                    break;
                 case "HELP":
                     printHelp();
                     toolClass.pauseFlow();
+                    reSelect = false;
+                    continue;
+                case "ATTACK":
+                    boolean battleResult = heroAttackFlow(currentHero);
+                    if( !battleResult ){
+                        reSelect = false;
+                        continue;
+                    }
                     break;
-
-                case "M":
-                    this.board.printBoard();
-                    toolClass.pauseFlow();
+                case "RECALL":
+                    boolean recallResult = recall(currentHero);
+                    if( !recallResult ){
+                        reSelect = false;
+                        continue;
+                    }
                     break;
-
-                case "R":
-//                    this.board.resetBoard();
-//                    this.board.printBoard();
-//                    printHelp();
-                    break;
-
                 default:
                     System.out.println("Invalid control");
                     toolClass.pauseFlow();
-                    break;
+                    reSelect = false;
+                    continue;
             }
 
             if( this.herosIndex == 3 ){
@@ -141,13 +192,113 @@ public class WorkFlow {
             }
 
         }
-        return moveResult;
     }
+
+
+
+    private boolean heroAttackFlow( herosGroup hg ){
+        List<aMonster> monsterPieces = getHeroAttackTargets(hg);
+        if( monsterPieces.isEmpty() ){
+            System.out.println("No monster to attack");
+            return false;
+        }
+
+        System.out.println("Monsters to be attacked:");
+        for( aMonster monsterPiece : monsterPieces ){
+            Monster monster = monsterPiece.getMonster();
+            System.out.println(monsterPiece.getSign() + ":");
+            System.out.println(monster);
+            System.out.println();
+        }
+
+        boolean quit = false;
+        int choose = -1;
+        while(!quit) {
+            System.out.println("Please choose a monster to attack:");
+            printMonstersToBeAttacked(monsterPieces);
+            choose = toolClass.getAnIntInput(0, monsterPieces.size() - 1);
+            if (choose != -1) {
+                quit = true;
+            }
+        }
+        aMonster target = monsterPieces.get(choose);
+        this.battle = new Battle(hg, target);
+        Piece result = this.battle.heroStartFlow();             // get the result of the battle
+        if( result.getPlaceType().equals("group") ){
+            this.battle.endSingleBattle();
+            popAMonsterPiece(target);
+        } else if( result.getPlaceType().equals("monster") ){
+            this.battle.endFailedBattle();
+            Cell battleCell = this.cells[hg.getRow()][hg.getCol()];
+            battleCell.removeTopPiece();
+            oneHeroReborn(hg);
+        }
+
+        System.out.println("One total battle round ends");
+        return true;
+    }
+
+    private void popAMonsterPiece( aMonster monsterPiece ){
+        int row = monsterPiece.getRow();
+        int col = monsterPiece.getCol();
+        Cell cell = this.cells[row][col];
+        Piece top = cell.peekTopPiece();
+        Piece below = cell.peekSecondPiece();
+        if( top == monsterPiece ){
+            cell.removeTopPiece();
+        } else if( below == monsterPiece ){
+            cell.removeTopPiece();
+            cell.removeTopPiece();
+            cell.pushPiece(top);
+        }
+    }
+
+    private void printMonstersToBeAttacked(List<aMonster> monsterPieces){
+        for( aMonster monsterPiece : monsterPieces ){
+            Monster monster = monsterPiece.getMonster();
+            System.out.println(monster.getName() + " : " + monsterPieces.indexOf(monsterPiece) );
+        }
+    }
+
+    private List<aMonster> getHeroAttackTargets( herosGroup hg ){
+        int row = hg.getRow();
+        int col = hg.getCol();
+        List<aMonster> monsterPieces = new ArrayList<>();
+        List<Cell> attackTargets = getCellsAroundOneChara(hg, 8);
+        for( Cell cell : attackTargets ){
+            Piece target = cell.peekTopPiece();
+            if( target.getPlaceType().equals("monster")){
+                monsterPieces.add((aMonster) target);
+            }
+        }
+        Piece below = this.cells[row][col].peekSecondPiece();
+        if( below.getPlaceType().equals("monster")){
+            monsterPieces.add((aMonster) below);
+        }
+        return monsterPieces;
+    }
+
 
     private void AllMonstersMove(){
         for( aMonster monster : this.monsterGroup ){
             int row = monster.getRow();
             int col = monster.getCol();
+            Cell origin = this.cells[row][col];
+            if( origin.getTopPieceType().equals("group") ){ // Here is a hero above the monster
+                // BATTLE!!!!!!
+                herosGroup target = (herosGroup) origin.peekTopPiece();
+                this.battle = new Battle(target, monster);
+                Piece result = this.battle.monsterStartFlow();
+                if( result.getPlaceType().equals("group") ){
+                    this.battle.endSingleBattle();
+                    popAMonsterPiece(monster);
+                } else if( result.getPlaceType().equals("monster") ){
+                    this.battle.endFailedBattle();
+                    origin.removeTopPiece();
+                    oneHeroReborn(target);
+                }
+                continue;
+            }
             List<Cell> moveTargets = getMoveTargetOfAMonster(monster);
             if(moveTargets.isEmpty())
                 continue;
@@ -155,13 +306,24 @@ public class WorkFlow {
             Cell moveTarget = toolClass.getRandomValueFromList(moveTargets);
             if( moveTarget.getTopPieceType().equals("group") ){
                 // BATTLE!!!!!!
-
-
-
-
-
-
-
+                herosGroup target = (herosGroup) moveTarget.peekTopPiece();
+                this.battle = new Battle(target, monster);
+                Piece result = this.battle.monsterStartFlow();
+                if( result.getPlaceType().equals("group") ){
+                    this.battle.endSingleBattle();
+                    popAMonsterPiece(monster);
+                } else if( result.getPlaceType().equals("monster") ){
+                    this.battle.endFailedBattle();
+                    moveTarget.removeTopPiece();
+                    Piece nowTop = moveTarget.peekTopPiece();
+                    if( nowTop.getPlaceType().equals("monster") ){  // if there is another monster in the cell,
+                        return;                                     // the winner monster cannot move to the cell.
+                    }
+                    this.cells[row][col].removeTopPiece();
+                    moveTarget.pushPiece(monster);
+                    monster.setRowAndCol(moveTarget.getRow(), moveTarget.getCol());
+                    oneHeroReborn(target);
+                }
             } else{
                 this.cells[row][col].removeTopPiece();
 //                this.cells[moveTarget.getRow()][moveTarget.getCol()].pushPiece(monster);    // ???Is moveTarget in this.cell?
@@ -171,9 +333,17 @@ public class WorkFlow {
         }
     }
 
-    private List<Cell> getMoveTargetOfAMonster(aMonster monsterPiece){
+    private List<Cell> getMoveTargetOfAMonster(aMonster monsterPiece){  // no wall, no monster, and no walk backwards
         List<Cell> moveTargets = getCellsAroundOneChara(monsterPiece, 4);
         moveTargets.removeIf(cell -> cell.getTopPieceType().equals("wall") || cell.getTopPieceType().equals("monster"));
+        moveTargets.removeIf(cell -> cell.getRow() == monsterPiece.getRow() - 1);
+        return moveTargets;
+    }
+
+    private List<Cell> getTeleportResult( herosGroup target ){
+        List<Cell> moveTargets = getCellsAroundOneChara(target, 4);
+        moveTargets.removeIf(cell -> cell.getTopPieceType().equals("wall") || cell.getTopPieceType().equals("group"));
+        moveTargets.removeIf(cell -> cell.getRow() == target.getRow() - 1);
         return moveTargets;
     }
 
@@ -201,9 +371,9 @@ public class WorkFlow {
     }
 
     private herosGroup selectOneHeroPiece(){
-        System.out.println("Now it's hero h" + (this.herosIndex + 1) + "'s turn to move");
+//        System.out.println("Now it's hero H" + (this.herosIndex + 1) + "'s turn to move");
         herosGroup result = this.herosgroup.get(this.herosIndex);
-        this.herosIndex++;                      // 0, 1, 2, 3. 3 means all heroes have moved.
+//        this.herosIndex++;                      // 0, 1, 2, 3. 3 means all heroes have moved.
         return result;
     }
 
@@ -211,16 +381,12 @@ public class WorkFlow {
         Human hero = hg.getGroup().get(0);
         int heroIndex = this.herosgroup.indexOf(hg);
         int col = 1 + 3 * heroIndex;
-        if( hero.isAlive() ){
-            System.out.println("hero " + hero.getName() + " is still alive");
-            return false;
-        }
         hero.setAlive(true);
         hero.setNowaHP(hero.getHP());
         Cell bornCell = cells[7][col];
         Piece top = bornCell.peekTopPiece();
-        if( top.getPlaceType().equals("monster") || bornCell.getStack().size() >= 4 ){; // a hero cannot reborn at a place with a monster
-            System.out.println("Cannot reborn here");                                   // or a cell already has 2 characters.
+        if( top.getPlaceType().equals("group") || bornCell.getStack().size() >= 4 ){; // a hero cannot reborn at a place with another hero
+            System.out.println("Hero reborn failed! The place is occupied!");           // or a cell already has 2 characters.
             return false;
         }
         hg.setRowAndCol(7, col);
@@ -229,15 +395,29 @@ public class WorkFlow {
         return true;
     }
 
+    private boolean recall( herosGroup hg ){                    // recall a hero to the board
+        Cell currentCell = this.cells[hg.getRow()][hg.getCol()];
+        int heroIndex = this.herosgroup.indexOf(hg);
+        int col = 1 + 3 * heroIndex;
+        Cell bornCell = this.cells[7][col];
+        Piece top = bornCell.peekTopPiece();
+        if( !bornCell.isEmpty() ){;                                     // a hero cannot reborn at a place with a monster
+            System.out.println("recall failed, place is occupied");     // or a cell already has 2 characters.
+            return false;
+        }
+        bornCell.pushPiece(hg);
+        hg.setRowAndCol(7, col);
+        currentCell.removeTopPiece();
+        return true;
+    }
+
 
     private void printHelp(){
-        System.out.println("W: Move Up");
-        System.out.println("S: Move Down");
-        System.out.println("A: Move Left");
-        System.out.println("D: Move Right");
+        System.out.println("WASD: Move");
         System.out.println("I: Print Introductions");
-        System.out.println("M: Print Map");
-        System.out.println("R: reset Map");
+        System.out.println("M: Enter a market");
+        System.out.println("ATTACK: Attack a monster");
+        System.out.println("RECALL: Recall a hero");
         System.out.println("Q: Quit");
     }
 
@@ -253,7 +433,20 @@ public class WorkFlow {
 
     }
 
-    public Piece HeroMeetAPlace(herosGroup hg, int newRow, int newCol){
+    private Monster getRandomMonster(){
+        int choice = toolClass.getRandomNumber(1, 100);
+        if( choice <= 33 ){
+            return toolClass.getRandomValueFromMap(this.chMaps.getDragonMap());
+        } else if( choice <= 66 ){
+            return toolClass.getRandomValueFromMap(this.chMaps.getExoMap());
+        } else{
+            return toolClass.getRandomValueFromMap(this.chMaps.getSpiritsMap());
+        }
+    }
+
+
+
+    public boolean HeroMeetAPlace(herosGroup hg, int newRow, int newCol){
         Piece place = this.cells[newRow][newCol].peekTopPiece();
         int oldRow = hg.getRow();
         int oldCol = hg.getCol();
@@ -261,35 +454,31 @@ public class WorkFlow {
         Cell newCell = this.cells[newRow][newCol];
 
         if(place.getPlaceType().equals("wall")){
-//            return workFlowInMeetingAPlace(place, hero);
+            System.out.println("You hit the wall, but nothing happened");
+            return false;
         } else if( place.getPlaceType().equals("group")){
-//            return workFlowInMeetingAPlace(place, hero);
+            System.out.println("You cannot step on another hero!");
+            return false;
         }
 
         if( newRow == oldRow - 1 ){     // want to move on? we need to check if there is a monster above
             if( checkMonster(newRow, newCol - 1) || checkMonster(newRow, newCol + 1) ){
-                return place;
+                return false;
             }
             if( checkMonster(oldRow, oldCol + 1) || checkMonster(oldRow, oldCol - 1) ){
-                return place;
+                return false;
             }
-
+            if( oldCell.peekSecondPiece().equals("monster")){
+                System.out.println("You cannot move on, there is a monster in the cell");
+                return false;
+            }
         }
 
         hg.setRowAndCol(newRow, newCol);
-        herosGroup topHG = (herosGroup) oldCell.peekTopPiece();
-        Human topHero = topHG.getGroup().get(0);
-        if( !topHero.getName().equals(hg.getGroup().get(0).getName()) ){  // the moving hero is under the top hero in
-            oldCell.removeTopPiece();                                     // the stack
-            oldCell.removeTopPiece();
-            newCell.pushPiece(hg);
-            oldCell.pushPiece(topHG);
-            return place;
-        }
         this.cells[oldRow][oldCol].removeTopPiece();
         this.cells[newRow][newCol].pushPiece(hg);
 //        return workFlowInMeetingAPlace(place, this.herosgroup);
-        return place;
+        return true;
     }
 
     private void printGroupInformation(){
@@ -353,6 +542,19 @@ public class WorkFlow {
 //        }
 //        return place;
 //    }
+
+    private void generateMonsters(){
+        for( int col = 1 ; col <= 7 ; col += 3 ){
+            if( !this.cells[0][col].isEmpty() ){
+                continue;
+            }
+            aMonster monsterPiece = new aMonster(0, col);
+            Monster monster = getRandomMonster();
+            monsterPiece.setMonster(monster);
+            this.monsterGroup.add(monsterPiece);
+            this.cells[0][col].pushPiece(monsterPiece);
+        }
+    }
 
     private void pickOneHeroFlow(){
         boolean quit = false;

@@ -15,10 +15,13 @@ public class aMonster extends Piece{
     }
 
     public aMonster( int row, int col ){
-        super("M", row, col, ColorsCodes.YELLOW, "monster");
+        super("M ", row, col, ColorsCodes.YELLOW, "monster");
     }
 
     public Monster getMonster(){
         return monster;
+    }
+    public void setMonster(Monster monster){
+        this.monster = monster;
     }
 }
