@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import Characters.*;
@@ -18,6 +19,7 @@ public class WorkFlow {
     Cell[][] cells;
     List<herosGroup> herosgroup;
     List<aMonster> monsterGroup;
+    List<aMonster> monsterToRemove;
     CharacterMaps chMaps;
 
     protected int rounds;
@@ -32,6 +34,7 @@ public class WorkFlow {
         this.cells = board.getCells();
         this.herosgroup = board.getHerosGroup();
         this.monsterGroup = board.getMonsterGroup();
+        this.monsterToRemove = new ArrayList<>();
         this.chMaps = new CharacterMaps();
         this.rounds = 1;
         this.herosIndex = 0;
@@ -194,9 +197,37 @@ public class WorkFlow {
         }
     }
 
+    private void deleteMonsters(){  // we cannot delete monsters during a for loop.
+        if( this.monsterToRemove.isEmpty() ){
+            return;
+        }
+        this.monsterGroup.removeAll(this.monsterToRemove);
+    }
 
+    private void battleLogic( herosGroup hg, aMonster monsterPiece, int start ){   // start: 1 hero start, 0 monster start
+        this.battle = new Battle(hg, monsterPiece);
+        Piece result;
+        if( start == 1 ){
+            result = this.battle.heroStartFlow();
+        } else{
+            result = this.battle.monsterStartFlow();
+        }
+        if( result.getPlaceType().equals("group") ){
+            this.battle.endSingleBattle();
+            popAMonsterPiece(monsterPiece);
+            this.monsterToRemove.add(monsterPiece);
+//            this.monsterGroup.remove(monsterPiece);
+//            this.monsterGroup.removeIf(monster -> monster.equals(monsterPiece));
+        } else if( result.getPlaceType().equals("monster") ){
+            this.battle.endFailedBattle();
+            Cell battleCell = this.cells[hg.getRow()][hg.getCol()];
+            battleCell.removeTopPiece();
+            oneHeroReborn(hg);
+        }
+    }
 
     private boolean heroAttackFlow( herosGroup hg ){
+        Iterator<aMonster> iterator = this.monsterGroup.iterator();
         List<aMonster> monsterPieces = getHeroAttackTargets(hg);
         if( monsterPieces.isEmpty() ){
             System.out.println("No monster to attack");
@@ -222,17 +253,19 @@ public class WorkFlow {
             }
         }
         aMonster target = monsterPieces.get(choose);
-        this.battle = new Battle(hg, target);
-        Piece result = this.battle.heroStartFlow();             // get the result of the battle
-        if( result.getPlaceType().equals("group") ){
-            this.battle.endSingleBattle();
-            popAMonsterPiece(target);
-        } else if( result.getPlaceType().equals("monster") ){
-            this.battle.endFailedBattle();
-            Cell battleCell = this.cells[hg.getRow()][hg.getCol()];
-            battleCell.removeTopPiece();
-            oneHeroReborn(hg);
-        }
+        this.battleLogic(hg, target, 1);
+        deleteMonsters();
+//        this.battle = new Battle(hg, target);
+//        Piece result = this.battle.heroStartFlow();             // get the result of the battle
+//        if( result.getPlaceType().equals("group") ){
+//            this.battle.endSingleBattle();
+//            popAMonsterPiece(target);
+//        } else if( result.getPlaceType().equals("monster") ){
+//            this.battle.endFailedBattle();
+//            Cell battleCell = this.cells[hg.getRow()][hg.getCol()];
+//            battleCell.removeTopPiece();
+//            oneHeroReborn(hg);
+//        }
 
         System.out.println("One total battle round ends");
         return true;
@@ -287,16 +320,17 @@ public class WorkFlow {
             if( origin.getTopPieceType().equals("group") ){ // Here is a hero above the monster
                 // BATTLE!!!!!!
                 herosGroup target = (herosGroup) origin.peekTopPiece();
-                this.battle = new Battle(target, monster);
-                Piece result = this.battle.monsterStartFlow();
-                if( result.getPlaceType().equals("group") ){
-                    this.battle.endSingleBattle();
-                    popAMonsterPiece(monster);
-                } else if( result.getPlaceType().equals("monster") ){
-                    this.battle.endFailedBattle();
-                    origin.removeTopPiece();
-                    oneHeroReborn(target);
-                }
+                this.battleLogic(target, monster, 0);
+//                this.battle = new Battle(target, monster);
+//                Piece result = this.battle.monsterStartFlow();
+//                if( result.getPlaceType().equals("group") ){
+//                    this.battle.endSingleBattle();
+//                    popAMonsterPiece(monster);
+//                } else if( result.getPlaceType().equals("monster") ){
+//                    this.battle.endFailedBattle();
+//                    origin.removeTopPiece();
+//                    oneHeroReborn(target);
+//                }
                 continue;
             }
             List<Cell> moveTargets = getMoveTargetOfAMonster(monster);
@@ -312,6 +346,7 @@ public class WorkFlow {
                 if( result.getPlaceType().equals("group") ){
                     this.battle.endSingleBattle();
                     popAMonsterPiece(monster);
+//                    this.monsterGroup.remove(monster);
                 } else if( result.getPlaceType().equals("monster") ){
                     this.battle.endFailedBattle();
                     moveTarget.removeTopPiece();
@@ -331,7 +366,10 @@ public class WorkFlow {
                 monster.setRowAndCol(moveTarget.getRow(), moveTarget.getCol());
             }
         }
+        deleteMonsters();
     }
+
+
 
     private List<Cell> getMoveTargetOfAMonster(aMonster monsterPiece){  // no wall, no monster, and no walk backwards
         List<Cell> moveTargets = getCellsAroundOneChara(monsterPiece, 4);

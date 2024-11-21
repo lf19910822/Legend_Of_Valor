@@ -34,7 +34,8 @@ public class Board {                        // A class that represent a board
     }
 
     void fillGroups(){
-        herosGroup h1 = new herosGroup("H1", 7, 1, ColorsCodes.CYAN);
+//        herosGroup h1 = new herosGroup("H1", 7, 1, ColorsCodes.CYAN);
+        herosGroup h1 = new herosGroup("H1", 5, 1, ColorsCodes.CYAN);
         herosGroup h2 = new herosGroup("H2", 7, 4, ColorsCodes.CYAN);
         herosGroup h3 = new herosGroup("H3", 7, 7, ColorsCodes.CYAN);
 
@@ -42,11 +43,13 @@ public class Board {                        // A class that represent a board
         this.heroesGroups.add(h2);
         this.heroesGroups.add(h3);
 
-        this.cells[7][1].pushPiece(h1);
+//        this.cells[7][1].pushPiece(h1);
+        this.cells[5][1].pushPiece(h1);
         this.cells[7][4].pushPiece(h2);
         this.cells[7][7].pushPiece(h3);
 
-        aMonster m1 = new aMonster("M ", 0, 1, ColorsCodes.YELLOW);
+//        aMonster m1 = new aMonster("M ", 0, 1, ColorsCodes.YELLOW);
+        aMonster m1 = new aMonster("M ", 4, 1, ColorsCodes.YELLOW);
         aMonster m2 = new aMonster("M ", 0, 4, ColorsCodes.YELLOW);
         aMonster m3 = new aMonster("M ", 0, 7, ColorsCodes.YELLOW);
 
@@ -54,7 +57,8 @@ public class Board {                        // A class that represent a board
         this.monsterGroups.add(m2);
         this.monsterGroups.add(m3);
 
-        this.cells[0][1].pushPiece(m1);
+//        this.cells[0][1].pushPiece(m1);
+        this.cells[4][1].pushPiece(m1);
         this.cells[0][4].pushPiece(m2);
         this.cells[0][7].pushPiece(m3);
     }
