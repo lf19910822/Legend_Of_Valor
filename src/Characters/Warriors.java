@@ -20,7 +20,6 @@ public class Warriors extends Human{
         this.setDexterity((int)(this.getDexterity() * 1.1));
         this.setMP((int)(this.getMP() * 1.1));
         this.setHP((int)(this.getLevel() * 100));
-        resetExpNeeded();
         printLevelUp();
         if( this.getExpNeeded() <= super.getEXP())
             levelUp();

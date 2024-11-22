@@ -22,7 +22,6 @@ public class Paladin extends Human{
         this.setMP((int)(this.getMP() * 1.1));
         this.setHP((int)(this.getLevel() * 100));
 
-        resetExpNeeded();
         printLevelUp();
         if( this.getExpNeeded() <= this.getEXP())
             levelUp();
