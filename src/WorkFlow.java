@@ -64,7 +64,11 @@ public class WorkFlow {
         while(!quit && !this.mainQuit){
             board.printBoard();
             System.out.println("Round " + this.rounds);
-
+            if( this.rounds % 3 == 0 ){
+                generateMonsters();
+                System.out.println("Monsters generated!");
+                board.printBoard();
+            }
             if( reSelect ){
                 this.currentHero = selectOneHeroPiece();
                 System.out.println("Now it's hero H" + (this.herosIndex + 1) + "'s turn to move");
@@ -77,9 +81,7 @@ public class WorkFlow {
                 reSelect = true;
             }
 
-            if( this.rounds % 3 == 0 ){
-                generateMonsters();
-            }
+
 //            herosGroup currentHero = selectOneHeroPiece();
             int oldRow = currentHero.getRow();
             int oldCol = currentHero.getCol();
@@ -360,6 +362,11 @@ public class WorkFlow {
                     oneHeroReborn(target);
                 }
             } else{
+                ///
+                if( cells[row][col].getStack().isEmpty()){
+                    System.out.println("Error: No enough pieces in the stack. cell " + row + " " + col);
+                }
+                ///
                 this.cells[row][col].removeTopPiece();
 //                this.cells[moveTarget.getRow()][moveTarget.getCol()].pushPiece(monster);    // ???Is moveTarget in this.cell?
                 moveTarget.pushPiece(monster);
@@ -588,7 +595,8 @@ public class WorkFlow {
             }
             aMonster monsterPiece = new aMonster(0, col);
             Monster monster = getRandomMonster();
-            monsterPiece.setMonster(monster);
+//            monsterPiece.setMonster(monster);
+            monsterPiece.setMonster(new Monster(monster));
             this.monsterGroup.add(monsterPiece);
             this.cells[0][col].pushPiece(monsterPiece);
         }

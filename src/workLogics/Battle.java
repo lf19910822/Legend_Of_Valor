@@ -281,6 +281,7 @@ public class Battle {
         System.out.println("The monster is defeated!");
         System.out.println("Hero regains HP and MP:");
         Formulas.regainAfterWin(this.herosgroup, 0.2);
+        this.recommendedMonsterLevel = this.singleMonster.getMonster().getLevel();
         int gold = Formulas.gainGoldAfterWin(this.herosgroup, this.recommendedMonsterLevel, 100);
         int exp = Formulas.gainEXPAfterWin(this.herosgroup, this.recommendedMonsterLevel, 5);
 
