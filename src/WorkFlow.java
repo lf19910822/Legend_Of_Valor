@@ -24,6 +24,16 @@ public class WorkFlow {
     Battle battle;
 
     HashSet<String> possibleLocationSet;
+    static Map<Integer,String> monsterPositionMap;
+    
+    static {
+        monsterPositionMap = new HashMap<>();
+        monsterPositionMap.put(1,"to the left of hero");
+        monsterPositionMap.put(-1,"to the right of hero");
+        monsterPositionMap.put(10,"above hero");
+        monsterPositionMap.put(11,"in the upper left of hero");
+        monsterPositionMap.put(-9,"in the upper right of hero");
+    }
 
     WorkFlow(){
         this.board = new Board(8,8);
@@ -250,6 +260,7 @@ public class WorkFlow {
                     boolean telePortResult = telePort(currentHero);
                     if(!telePortResult){
                         reSelect = false;
+                        this.board.printBoard();
                         continue;
                     }
                     break;
@@ -336,11 +347,13 @@ public class WorkFlow {
             System.out.println("No monster to attack");
             return false;
         }
-
+        int heroRow = hg.getRow();
+        int heroCol = hg.getCol();
         System.out.println("Monsters to be attacked:");
         for( aMonster monsterPiece : monsterPieces ){
             Monster monster = monsterPiece.getMonster();
-            System.out.println(monsterPiece.getSign() + ":");
+            String position = monsterPositionMap.get((heroRow-monsterPiece.getRow())*10+heroCol-monsterPiece.getCol());
+            System.out.println(monsterPiece.getSign() + position+":");
             System.out.println(monster);
             System.out.println();
         }
@@ -489,7 +502,7 @@ public class WorkFlow {
 
     private List<Cell> getMoveTargetOfAMonster(aMonster monsterPiece){  // no wall, no monster, and no walk backwards
         List<Cell> moveTargets = getCellsAroundOneChara(monsterPiece, 4);
-        moveTargets.removeIf(cell -> cell.getTopPieceType().equals("wall") || cell.getTopPieceType().equals("monster"));
+        moveTargets.removeIf(cell -> cell.getTopPieceType().equals("wall") || cell.getTopPieceType().equals("monster") || cell.getCellType().equals("\033[30mO\033[0m"));
         moveTargets.removeIf(cell -> cell.getRow() == monsterPiece.getRow() - 1);
         return moveTargets;
     }
@@ -572,8 +585,16 @@ public class WorkFlow {
             this.cells[newRow][newCol].pushPiece(hpp);
         }
         this.board.printBoard();
-        System.out.println("Please choose a index of the space that you want to teleport to.");
-        int choose = toolClass.getAnIntInput(1,possiblePositions.size());
+        int choose=-1;
+        while(true){
+            System.out.println("Please choose a index of the space that you want to teleport to.");
+            choose = toolClass.getAnIntInput(1,possiblePositions.size());
+            if(choose<=possiblePositions.size()&&choose>=1){
+                break;
+            }
+            System.out.println("Invalid index,try again!");
+        }
+
         for(int i=0;i<possiblePositions.size();i++){
             heroPossiblePosition hpp =possiblePositions.get(i);
             int newRow = hpp.getRow();
