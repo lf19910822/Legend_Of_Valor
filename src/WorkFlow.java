@@ -68,7 +68,7 @@ public class WorkFlow {
 
 
 
-    private void increaseByCellType( herosGroup hg ){
+    private void increaseByCellType( herosGroup hg, int rate ){
         if( hg.isIncreasedByCellType() ){               // if the hero has already been increased by cell type, do nothing
             return;
         }
@@ -76,33 +76,33 @@ public class WorkFlow {
         String cellType = getCellType(hg);
         switch (cellType){
             case "C":
-                hero.setNowaAgility(hero.getNowaAgility() + 30);
+                hero.setNowaAgility(hero.getNowaAgility() + rate);
                 break;
             case "B":
-                hero.setNowaDexterity(hero.getNowaDexterity() + 30);
+                hero.setNowaDexterity(hero.getNowaDexterity() + rate);
                 break;
             case "K":
-                hero.setNowaStrength(hero.getNowaStrength() + 30);
+                hero.setNowaStrength(hero.getNowaStrength() + rate);
                 break;
             default:
                 break;
         }
     }
 
-    private void printIncreasedByCellType( herosGroup hg ){
+    private void printIncreasedByCellType( herosGroup hg, int rate ){
         String cellType = getCellType(hg);
         switch (cellType){
             case "C":
                 System.out.println("Hero H" + (this.herosIndex) + " steps on a " + ColorsCodes.PURPLE + "Cave!" + ColorsCodes.RESET);
-                System.out.println("Hero H" + (this.herosIndex) + " agility increased by 30");
+                System.out.println("Hero H" + (this.herosIndex) + "'s agility is increased by " + rate);
                 break;
             case "B":
                 System.out.println("Hero H" + (this.herosIndex) + " steps on a " + ColorsCodes.GREEN + "Bush!" + ColorsCodes.RESET);
-                System.out.println("Hero H" + (this.herosIndex) + " dexterity increased by 30");
+                System.out.println("Hero H" + (this.herosIndex) + "'s dexterity is increased by " + rate);
                 break;
             case "K":
                 System.out.println("Hero H" + (this.herosIndex) + " steps on a " + ColorsCodes.RED + "Koulou!" + ColorsCodes.RESET);
-                System.out.println("Hero H" + (this.herosIndex) + " strength increased by 30");
+                System.out.println("Hero H" + (this.herosIndex) + "'s strength is increased by " + rate);
                 break;
             default:
                 break;
@@ -136,7 +136,7 @@ public class WorkFlow {
                 this.herosIndex++;
                 reSelect = true;
             }
-            printIncreasedByCellType(this.currentHero);
+            printIncreasedByCellType(this.currentHero, 200);
 
 
 //            herosGroup currentHero = selectOneHeroPiece();
@@ -589,7 +589,7 @@ public class WorkFlow {
         Human hero = hg.getGroup().get(0);
         hero.resetNowaAttributes();
         hg.setIncreasedByCellType(false);
-        increaseByCellType(hg);
+        increaseByCellType(hg, 200);
 
         this.cells[newRow][newCol].pushPiece(hg);
 //        return workFlowInMeetingAPlace(place, this.herosgroup);
