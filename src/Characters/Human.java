@@ -86,6 +86,7 @@ public class Human extends Character {
 
     public void printLevelUp(){
         System.out.println("You have leveled up! Now you are level " + this.getLevel());
+        this.resetExpNeeded();
         System.out.println("Now you need " + (this.getExpNeeded() - this.EXP) + " EXP to level up again.");
         System.out.println();
     }
@@ -99,7 +100,6 @@ public class Human extends Character {
         this.setHP((int)(this.getHP() * 1.1));
 
         printLevelUp();
-        this.resetExpNeeded();
     }
 
     @Override
@@ -203,12 +203,17 @@ public class Human extends Character {
         }
     }
 
-    public boolean pickAWeapon(Weapon weapon){
-        int handsNeeded = weapon.getRequiredHands();
+    public int calculateHandsInUse(){
         int handsInUse = 0;
         for( Weapon w : this.weaponsOnHand){
             handsInUse += w.getRequiredHands();
         }
+        return handsInUse;
+    }
+
+    public boolean pickAWeapon(Weapon weapon){
+        int handsNeeded = weapon.getRequiredHands();
+        int handsInUse = calculateHandsInUse();
         if( 2 < handsNeeded + handsInUse ){
             System.out.println("You cannot take this weapon, you have no enough hands");
             System.out.println("Your hands left: " + (2 - handsInUse));
@@ -251,7 +256,7 @@ public class Human extends Character {
         return this.weaponsOnHand;
     }
 
-    public void printArmoryORWeapon(){
+    public void printArmoryORWeapon(){          // print all Armories and weapons in human's list
         System.out.println(ColorsCodes.RED);
         System.out.println("Weapons:");
         System.out.println(Weapon.header);
@@ -320,6 +325,7 @@ public class Human extends Character {
     }
     public void useSpell(Spell spell){
         this.nowaMP = Math.max(this.nowaMP - spell.getManaCost(), 0);
+        this.deleteItem(spell);
     }
     public void beRecoveredMP( int MP ){
         this.nowaMP = Math.min(this.nowaMP + MP, this.getMP());
@@ -367,11 +373,64 @@ public class Human extends Character {
         this.deleteItem(item);
     }
 
+    public boolean useItemsFlow(){
+        boolean result = false;                  // true means success, false means fail
+
+        boolean quit = false;
+        while( !quit ){
+            System.out.println("0 - Pick an armory or weapon");
+            System.out.println("1 - print items on body");
+            System.out.println("2 - Drop all weapons");
+            System.out.println("3 - Drop all Armors");
+            System.out.println("4 - Use a potion");
+            System.out.println("5 - Quit");
+            int input = toolClass.getAnIntInput(0, 5);
+            if( input == -1 )
+                continue;
+
+            switch(input){
+                case 0:
+                    if(pickArmoryOrWeaponByOneHero()){
+                        quit = true;
+                        result = true;
+                    }
+//                    toolClass.pauseFlow();
+                    break;
+                case 1:
+                    printItemsOnBody();
+                    toolClass.pauseFlow();
+                    break;
+                case 2:
+                    takeOffAllWeapon();
+                    toolClass.pauseFlow();
+                    break;
+                case 3:
+                    takeOffAllArmory();
+                    toolClass.pauseFlow();
+                    break;
+                case 4:
+                    if(selectAndUseAPotion()){
+                        quit = true;
+                        result = true;
+                    }
+                    toolClass.pauseFlow();
+                    break;
+                case 5:
+                    result = false;
+                    quit = true;
+                    break;
+            }
+        }
+
+        return result;
+    }
+
     public boolean takeOffAllArmory(){
         if( this.ArmoryOnBody.isEmpty()){
             System.out.println("You have no armory on body");
             return false;
         } else{
+            System.out.println("All Armories have been dropped");
             this.ArmoryOnBody.clear();
             return true;
         }
@@ -382,9 +441,23 @@ public class Human extends Character {
             System.out.println("You have no weapon on hand");
             return false;
         } else{
+            System.out.println("All weapons have been dropped");
             this.weaponsOnHand.clear();
             return true;
         }
+    }
+
+    public List<Items> getItemsOnBody(){
+        List<Items> itemsOnBody = new ArrayList<>();
+        itemsOnBody.addAll(this.ArmoryOnBody);
+        itemsOnBody.addAll(this.weaponsOnHand);
+        return itemsOnBody;
+    }
+
+    public void printItemsOnBody(){
+        List<Items> ItemsOnBody = getItemsOnBody();
+        printArmoryAndWeapon(ItemsOnBody);
+        System.out.println("Now you have " + calculateHandsInUse() + " hands in use");
     }
 
     public boolean pickArmoryOrWeaponByOneHero(){
@@ -421,6 +494,7 @@ public class Human extends Character {
                         System.out.println("Hero " + hero.getName() + " picked armory " + item.getName());
                     }
                 }
+                toolClass.pauseFlow();
                 return true;
             }
         }

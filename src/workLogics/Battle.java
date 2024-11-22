@@ -446,7 +446,7 @@ public class Battle {
             System.out.println("Monster " + monster.getName() + " is dead!");
             this.monsters.remove(monster);
         }
-        human.deleteItem(spell);
+//        human.deleteItem(spell);
         return true;
     }
 

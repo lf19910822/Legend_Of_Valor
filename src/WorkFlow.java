@@ -254,6 +254,13 @@ public class WorkFlow {
                     }
                     break;
 
+                case "ITEM":
+                    if(!hero.useItemsFlow()){
+                        reSelect = false;
+                        continue;
+                    }
+                    break;
+
                 case "M":
                     if( getCellType(currentHero).equals("N") ){
 
@@ -262,6 +269,9 @@ public class WorkFlow {
                     } else{
                         System.out.println("You can only enter a market when you are in " + ColorsCodes.BLUE + " Nexus"
                                 + ColorsCodes.RESET);
+                        toolClass.pauseFlow();
+                        reSelect = false;
+                        continue;
                     }
                     break;
 
@@ -638,6 +648,7 @@ public class WorkFlow {
         System.out.println("P: Do nothing");
         System.out.println("I: Print Introductions");
         System.out.println("M: Enter a market(If you are in" + ColorsCodes.BLUE + " Nexus" + ColorsCodes.RESET + ")");
+        System.out.println("Item: Pick or Drop an item");
         System.out.println("ATTACK: Attack a monster");
         System.out.println("RECALL: Recall a hero");
         System.out.println("TELEPORT: Teleport a hero");
@@ -648,7 +659,7 @@ public class WorkFlow {
         if( !this.board.isOutOfBoard( row, col ) ){
             if( this.cells[row][col].peekTopPiece().getPlaceType().equals("monster") ){
                 System.out.println("You cannot move on, there is a monster besides");
-                toolClass.pauseFlow();
+//                toolClass.pauseFlow();
                 return true;
             }
         }
