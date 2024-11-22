@@ -9,7 +9,7 @@ public class common extends Piece{
     }
 
     public common( int row, int col, double rateOfFight ){
-        super(" ", row, col, ColorsCodes.RESET, "common");
+        super("  ", row, col, ColorsCodes.RESET, "common");
         this.rateOfFight = rateOfFight;
     }
 

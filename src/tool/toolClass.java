@@ -7,6 +7,24 @@ import java.util.*;
 public class toolClass {
     public static Scanner scanner = new Scanner(System.in);
 
+    public static int[][] directions8 = {
+            {-1, 0}, // up
+            {1, 0},  // down
+            {0, -1}, // left
+            {0, 1},  // right
+            {-1, -1},// left up
+            {-1, 1}, // right up
+            {1, -1}, // left down
+            {1, 1}   // right down
+    };
+
+    public static int[][] directions4 = {
+            {-1, 0}, // up
+            {1, 0},  // down
+            {0, -1}, // left
+            {0, 1},  // right
+    };
+
 
 
     public static int getRandomNumber(int a, int b) {
