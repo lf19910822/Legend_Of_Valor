@@ -361,11 +361,12 @@ public class Battle {
         int numberOfMonsters = this.monsters.size();
         while(true){
             printMonsters();
+            if(numberOfMonsters==1)
+                return this.monsters.get(0);
             System.out.println("Choose a monster by index to attack");
             int input = toolClass.getAnIntInput(0, numberOfMonsters - 1);
             if( input == -1 )
                 continue;
-
             return this.monsters.get(input);
         }
 
