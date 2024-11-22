@@ -1,13 +1,8 @@
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+
 import Characters.*;
 import Colors.ColorsCodes;
-import places.aMonster;
-import places.herosGroup;
-import places.Piece;
-import places.common;
+import places.*;
 import tool.toolClass;
 import workLogics.Battle;
 import workLogics.Market;
@@ -28,6 +23,7 @@ public class WorkFlow {
     protected herosGroup currentHero;
     Battle battle;
 
+    HashSet<String> possibleLocationSet;
 
     WorkFlow(){
         this.board = new Board(8,8);
@@ -113,7 +109,6 @@ public class WorkFlow {
     }
 
     public void controls(){
-        int count = 0;
         boolean moveResult = true;
         boolean quit = false;
         boolean reSelect = true;
@@ -247,6 +242,13 @@ public class WorkFlow {
                 case "RECALL":
                     boolean recallResult = recall(currentHero);
                     if( !recallResult ){
+                        reSelect = false;
+                        continue;
+                    }
+                    break;
+                case "TELEPORT":
+                    boolean telePortResult = telePort(currentHero);
+                    if(!telePortResult){
                         reSelect = false;
                         continue;
                     }
@@ -482,14 +484,6 @@ public class WorkFlow {
         return moveTargets;
     }
 
-    private List<Cell> getTeleportResult( herosGroup target ){
-        List<Cell> moveTargets = getCellsAroundOneChara(target, 4);
-        moveTargets.removeIf(cell -> cell.getTopPieceType().equals("wall") || cell.getTopPieceType().equals("group"));
-        moveTargets.removeIf(cell -> cell.getRow() == target.getRow() - 1);
-        return moveTargets;
-    }
-
-
     private List<Cell> getCellsAroundOneChara( Piece me, int numDirections ){  // check target directions,
         List<Cell> neighbors = new ArrayList<>();                                  // return all target characters.
         int row = me.getRow();
@@ -553,7 +547,92 @@ public class WorkFlow {
         return true;
     }
 
+    private boolean telePort(herosGroup hg){
+        int heroIndex1=this.herosIndex%this.herosgroup.size();
+        int heroIndex2=(this.herosIndex+1)%this.herosgroup.size();
+        List<heroPossiblePosition> possiblePositions= getPossiblePosition(heroIndex1,heroIndex2);
+        if(possiblePositions.size()<1){
+            System.out.println("No valid space that hero can teleport to!");
+            return false;
+        }
+        for(int i=0;i<possiblePositions.size();i++){
+            heroPossiblePosition hpp =possiblePositions.get(i);
+            int newRow = hpp.getRow();
+            int newCol = hpp.getCol();
+            this.cells[newRow][newCol].pushPiece(hpp);
+        }
+        this.board.printBoard();
+        System.out.println("Please choose a index of the space that you want to teleport to.");
+        int choose = toolClass.getAnIntInput(1,possiblePositions.size());
+        for(int i=0;i<possiblePositions.size();i++){
+            heroPossiblePosition hpp =possiblePositions.get(i);
+            int newRow = hpp.getRow();
+            int newCol = hpp.getCol();
+            this.cells[newRow][newCol].removeTopPiece();
+        }
+        heroPossiblePosition hpp =possiblePositions.get(choose-1);
+        int newRow = hpp.getRow();
+        int newCol = hpp.getCol();
+        HeroMeetAPlace(hg,newRow,newCol);
+        return true;
+    }
 
+    private List<heroPossiblePosition> getPossiblePosition(int heroIndex1,int heroIndex2){
+        herosGroup hero1 = this.herosgroup.get(heroIndex1);
+        herosGroup hero2 = this.herosgroup.get(heroIndex2);
+        List<heroPossiblePosition> result = new ArrayList<>();
+        int currentHeroCol = this.currentHero.getCol();
+        int index=1;
+        int hero1Row = hero1.getRow();
+        int hero1Col = hero1.getCol();
+        int hero2Row = hero2.getRow();
+        int hero2Col = hero2.getCol();
+        this.possibleLocationSet = new HashSet<>();
+        if(Math.abs(currentHeroCol-hero1Col)>1){
+            result.addAll(checkPossibleTelePortDestinationPerHero(hero1Row,hero1Col,index));
+        }
+        index+=result.size();
+        if(Math.abs(currentHeroCol-hero2Col)>1){
+            result.addAll(checkPossibleTelePortDestinationPerHero(hero2Row,hero2Col,index));
+        }
+        return result;
+    }
+
+    private List<heroPossiblePosition>checkPossibleTelePortDestinationPerHero(int row, int col,int startIndex){
+        List<heroPossiblePosition> result = new ArrayList<>();
+        int index = startIndex;
+        if(canBeTeleportDestination(row+1,col)){
+            result.add(new heroPossiblePosition(index+" ",row+1,col,ColorsCodes.BRIGHT_YELLOW));
+            index++;
+        }
+        if(canBeTeleportDestination(row,col+1)){
+            result.add(new heroPossiblePosition(index+" ",row,col+1,ColorsCodes.BRIGHT_YELLOW));
+            index++;
+        }
+        if(canBeTeleportDestination(row,col-1)){
+            result.add(new heroPossiblePosition(index+" ",row,col-1,ColorsCodes.BRIGHT_YELLOW));
+        }
+        return result;
+    }
+    private boolean canBeTeleportDestination(int row, int col){
+        if(row < 0 || row >= this.board.boardRow || col < 0 || col >= this.board.boardCol){
+            return false;
+        }
+        Cell destinationCell = this.cells[row][col];
+        Piece place = this.cells[row][col].peekTopPiece();
+        String location = Integer.toString(row+10*col);
+        if(possibleLocationSet.contains(location)){
+            return false;
+        }
+        if(destinationCell.getCellType().equals("\033[30mO\033[0m")||destinationCell.getCellType().equals("\033[0mI\033[0m")){
+            return false;
+        }
+        if(place.getPlaceType().equals("group")){
+            return false;
+        }
+        possibleLocationSet.add(location);
+        return true;
+    }
     private void printHelp(){
         System.out.println("WASD: Move");
         System.out.println("P: Do nothing");
@@ -561,6 +640,7 @@ public class WorkFlow {
         System.out.println("M: Enter a market(If you are in" + ColorsCodes.BLUE + " Nexus" + ColorsCodes.RESET + ")");
         System.out.println("ATTACK: Attack a monster");
         System.out.println("RECALL: Recall a hero");
+        System.out.println("TELEPORT: Teleport a hero");
         System.out.println("Q: Quit");
     }
 
@@ -604,6 +684,14 @@ public class WorkFlow {
             return false;
         }
 
+        if(newCell.getCellType().equals("\033[30mO\033[0m")){
+            boolean choose=HeroMeetObstacle();
+            if(choose){
+                newCell.setCellType(ColorsCodes.WHITE+"P"+ColorsCodes.RESET);
+            }else{
+                return false;
+            }
+        }
         if( newRow == oldRow - 1 ){     // want to move on? we need to check if there is a monster above
             if( checkMonster(newRow, newCol - 1) || checkMonster(newRow, newCol + 1) ){
                 return false;
@@ -629,6 +717,11 @@ public class WorkFlow {
         return true;
     }
 
+    private boolean HeroMeetObstacle(){
+        System.out.println("You can not enter a space with type Obstacle, however, you can choose to use a turn to remove it. Do you want to do so? 1 YES, 0 NO");
+        int choose = toolClass.getAnIntInput(0, 1);
+        return choose==1;
+    }
     private void printGroupInformation(){
             herosGroup currentGroup = this.currentHero;
             Human hero = currentGroup.getGroup().get(0);
@@ -661,8 +754,10 @@ public class WorkFlow {
     private void printWinWords(){
         int result = checkWin();
         if( result == 1 ){
+            this.board.printBoard();
             System.out.println("****************Game over, Heroes win!****************");
         } else if( result == 2 ){
+            this.board.printBoard();
             System.out.println("****************Game over, Monsters win!****************");
         }
     }
