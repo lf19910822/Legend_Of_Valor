@@ -144,7 +144,7 @@ public class WorkFlow {
             int oldCol = currentHero.getCol();
             int newRow;
             int newCol;
-
+            Human hero = currentHero.getGroup().get(0);
             printHelp();
 
             String control = scanner.nextLine();
@@ -157,7 +157,11 @@ public class WorkFlow {
                         break;
                     } else{
                         moveResult = HeroMeetAPlace(currentHero, newRow, newCol);
-
+                        int checkWin = checkWin();
+                        if( checkWin == 1 ){
+                            this.mainQuit = true;
+                            break;
+                        }
                         if( !moveResult ){
                             toolClass.pauseFlow();
                             reSelect = false;
@@ -247,6 +251,18 @@ public class WorkFlow {
                         continue;
                     }
                     break;
+
+                case "M":
+                    if( getCellType(currentHero).equals("N") ){
+
+                        Market market = Market.getMarket();
+                        market.marketWorkFlow(hero);
+                    } else{
+                        System.out.println("You can only enter a market when you are in " + ColorsCodes.BLUE + " Nexus"
+                                + ColorsCodes.RESET);
+                    }
+                    break;
+
                 default:
                     System.out.println("Invalid control");
                     toolClass.pauseFlow();
@@ -254,9 +270,18 @@ public class WorkFlow {
                     continue;
             }
 
+            if( this.mainQuit && checkWin() == 1 ){ // hero wins
+                printWinWords();
+                break;
+            }
+
             if( this.herosIndex == 3 ){
                 this.rounds++;
                 AllMonstersMove();
+                if( checkWin() == 2 ){  // monster wins
+                    printWinWords();
+                    this.mainQuit = true;
+                }
                 this.herosIndex = 0;
             }
 
@@ -423,6 +448,10 @@ public class WorkFlow {
                     this.cells[row][col].removeTopPiece();
                     moveTarget.pushPiece(monster);
                     monster.setRowAndCol(moveTarget.getRow(), moveTarget.getCol());
+                    if( checkWin() == 2 ){
+                        this.mainQuit = true;
+                        break;
+                    }
                     oneHeroReborn(target);
                 }
             } else{
@@ -435,6 +464,10 @@ public class WorkFlow {
 //                this.cells[moveTarget.getRow()][moveTarget.getCol()].pushPiece(monster);    // ???Is moveTarget in this.cell?
                 moveTarget.pushPiece(monster);
                 monster.setRowAndCol(moveTarget.getRow(), moveTarget.getCol());
+                if( checkWin() == 2 ){
+                    this.mainQuit = true;
+                    break;
+                }
             }
         }
         deleteMonsters();
@@ -525,7 +558,7 @@ public class WorkFlow {
         System.out.println("WASD: Move");
         System.out.println("P: Do nothing");
         System.out.println("I: Print Introductions");
-        System.out.println("M: Enter a market");
+        System.out.println("M: Enter a market(If you are in" + ColorsCodes.BLUE + " Nexus" + ColorsCodes.RESET + ")");
         System.out.println("ATTACK: Attack a monster");
         System.out.println("RECALL: Recall a hero");
         System.out.println("Q: Quit");
@@ -608,55 +641,31 @@ public class WorkFlow {
 
     }
 
+    public int checkWin(){              // 0 noWinner, 1 heroWin, 2 monsterWin
+        int i, j;
+        for( j = 0 ; j < this.board.boardCol; j++){
+            if( this.cells[0][j].peekTopPiece() instanceof herosGroup){
+                return 1;
+            }
+        }
 
+        for( j = 0 ; j < this.board.boardCol; j++){
+            if( this.cells[7][j].peekTopPiece() instanceof aMonster){
+                return 2;
+            }
+        }
 
-//    public Piece workFlowInMeetingAPlace(Piece place, herosGroup hgAfterMove){
-//        String placeType = place.getPlaceType();
-//
-//        switch (placeType){
-//            case "wall":
-//                System.out.println("You hit the wall, but nothing happened");
-//                toolClass.pauseFlow();
-//                break;
-//            case "market":
-//                this.board.printBoard();
-//                System.out.println("You are in a market, Do you want to enter? 1 YES, 0 NO");
-//                int choose = toolClass.getAnIntInput(0, 1);
-//                if( choose == 1 ){
-//                    Market market = Market.getMarket();
-//                    for(Human buyer : hgAfterMove.getGroup()){
-//                        System.out.println("Welcome to the market! The buyer now is: " + buyer.getName());
-//                        market.marketWorkFlow(buyer);
-//                    }
-//                }
-//                break;
-//            case "monster":
-//                System.out.println("You are in a fight");
-//                Battle regularBattle = Battle.getABattle(this.herosgroup);
-//                boolean regularBattleResult = regularBattle.battleWorkFlow();
-//                if( !regularBattleResult ){
-//                    System.out.println("You are defeated, game over");
-//                    this.mainQuit = true;
-//                }
-//                break;
-//            case "common":
-//                common common = (common) place;
-//                double battleRate = common.getRateOfFight();
-//                if( toolClass.Dice(battleRate) ){
-//                    System.out.println("You encountered a monster ambush!");
-//                    Battle EncounterBattle = Battle.getABattle(this.herosgroup);
-//                    boolean EncounterBattleResult = EncounterBattle.battleWorkFlow();
-//                    if( !EncounterBattleResult ){
-//                        System.out.println("You are defeated, game over");
-//                        this.mainQuit = true;
-//                    }
-//                }
-//                break;
-//            default:
-//                break;
-//        }
-//        return place;
-//    }
+        return 0;
+    }
+
+    private void printWinWords(){
+        int result = checkWin();
+        if( result == 1 ){
+            System.out.println("****************Game over, Heroes win!****************");
+        } else if( result == 2 ){
+            System.out.println("****************Game over, Monsters win!****************");
+        }
+    }
 
     private void generateMonsters(){
         for( int col = 1 ; col <= 7 ; col += 3 ){

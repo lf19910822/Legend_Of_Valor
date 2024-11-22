@@ -82,6 +82,7 @@ public class Board {                        // A class that represent a board
 //        this.cells[groupRow][groupCol].pushPiece(this.herosgroup);
 //    }
 
+
     void initBoardAtRandom(){
         int i, j;
         for( j = 0 ; j < this.boardCol; j++){

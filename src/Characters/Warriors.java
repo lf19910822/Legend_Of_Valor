@@ -22,6 +22,7 @@ public class Warriors extends Human{
         this.setHP((int)(this.getLevel() * 100));
         resetExpNeeded();
         printLevelUp();
-
+        if( this.getExpNeeded() <= super.getEXP())
+            levelUp();
     }
 }
