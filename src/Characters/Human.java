@@ -123,9 +123,9 @@ public class Human extends Character {
             this.getMP(),
             this.getEXP(),
             this.getLevel(),
-            this.getAgility(),
-            this.getStrength(),
-            this.getDexterity(),
+            this.getNowaAgility(),
+            this.getNowaStrength(),
+            this.getNowaDexterity(),
             this.getGold()
         );
     }

@@ -56,6 +56,62 @@ public class WorkFlow {
         controls();
     }
 
+    private static String removeAnsiCodes(String input) {       // remove ANSI codes
+        return input.replaceAll("\u001b\\[[;\\d]*m", "");
+    }
+
+    private String getCellType( Piece piece ){
+        int row = piece.getRow();
+        int col = piece.getCol();
+        return removeAnsiCodes(this.cells[row][col].getCellType());
+    }
+
+
+
+    private void increaseByCellType( herosGroup hg ){
+        if( hg.isIncreasedByCellType() ){               // if the hero has already been increased by cell type, do nothing
+            return;
+        }
+        Human hero = hg.getGroup().get(0);
+        String cellType = getCellType(hg);
+        switch (cellType){
+            case "C":
+                hero.setNowaAgility(hero.getNowaAgility() + 30);
+                break;
+            case "B":
+                hero.setNowaDexterity(hero.getNowaDexterity() + 30);
+                break;
+            case "K":
+                hero.setNowaStrength(hero.getNowaStrength() + 30);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void printIncreasedByCellType( herosGroup hg ){
+        String cellType = getCellType(hg);
+        switch (cellType){
+            case "C":
+                System.out.println("Hero H" + (this.herosIndex) + " steps on a " + ColorsCodes.PURPLE + "Cave!" + ColorsCodes.RESET);
+                System.out.println("Hero H" + (this.herosIndex) + " agility increased by 30");
+                break;
+            case "B":
+                System.out.println("Hero H" + (this.herosIndex) + " steps on a " + ColorsCodes.GREEN + "Bush!" + ColorsCodes.RESET);
+                System.out.println("Hero H" + (this.herosIndex) + " dexterity increased by 30");
+                break;
+            case "K":
+                System.out.println("Hero H" + (this.herosIndex) + " steps on a " + ColorsCodes.RED + "Koulou!" + ColorsCodes.RESET);
+                System.out.println("Hero H" + (this.herosIndex) + " strength increased by 30");
+                break;
+            default:
+                break;
+        }
+
+
+
+    }
+
     public void controls(){
         int count = 0;
         boolean moveResult = true;
@@ -80,6 +136,7 @@ public class WorkFlow {
                 this.herosIndex++;
                 reSelect = true;
             }
+            printIncreasedByCellType(this.currentHero);
 
 
 //            herosGroup currentHero = selectOneHeroPiece();
@@ -157,8 +214,15 @@ public class WorkFlow {
                     }
 
                     break;
+
+                case "P":
+                    System.out.println("Hero H" + (this.herosIndex) + " do nothing in this turn");
+                    toolClass.pauseFlow();
+                    break;
+
                 case "I":
                     printGroupInformation();
+                    reSelect = false;
                     toolClass.pauseFlow();
                     continue;
                 case "Q":
@@ -459,6 +523,7 @@ public class WorkFlow {
 
     private void printHelp(){
         System.out.println("WASD: Move");
+        System.out.println("P: Do nothing");
         System.out.println("I: Print Introductions");
         System.out.println("M: Enter a market");
         System.out.println("ATTACK: Attack a monster");
@@ -518,16 +583,21 @@ public class WorkFlow {
                 return false;
             }
         }
-
         hg.setRowAndCol(newRow, newCol);
         this.cells[oldRow][oldCol].removeTopPiece();
+
+        Human hero = hg.getGroup().get(0);
+        hero.resetNowaAttributes();
+        hg.setIncreasedByCellType(false);
+        increaseByCellType(hg);
+
         this.cells[newRow][newCol].pushPiece(hg);
 //        return workFlowInMeetingAPlace(place, this.herosgroup);
         return true;
     }
 
     private void printGroupInformation(){
-        for( herosGroup currentGroup : this.herosgroup ){
+            herosGroup currentGroup = this.currentHero;
             Human hero = currentGroup.getGroup().get(0);
             System.out.println(hero);
             hero.printArmoryORWeapon();
@@ -535,7 +605,7 @@ public class WorkFlow {
             System.out.println(ColorsCodes.BG_BLACK + "+--------------------------------------------" +
                     "---------------------------------+"
                     + ColorsCodes.RESET);
-        }
+
     }
 
 

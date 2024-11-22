@@ -7,17 +7,28 @@ import java.util.List;
 public class herosGroup extends Piece{
     private List<Human> group;
     private int groupLength;
+    private boolean isIncreasedByCellType;
 
     public herosGroup( String sign, int row, int col, String color){
         super(sign, row, col, color, "group");
         group = new ArrayList<>();
         groupLength = 0;
+        isIncreasedByCellType = false;
     }
 
     public herosGroup( int row, int col ){
         super("P", row, col, ColorsCodes.BLUE, "group");
         group = new ArrayList<>();
         groupLength = 0;
+        isIncreasedByCellType = false;
+    }
+
+    public boolean isIncreasedByCellType() {
+        return isIncreasedByCellType;
+    }
+
+    public void setIncreasedByCellType(boolean increasedByCellType) {
+        isIncreasedByCellType = increasedByCellType;
     }
 
     public List<Human> getGroup(){
