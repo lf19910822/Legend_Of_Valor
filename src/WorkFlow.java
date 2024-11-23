@@ -7,7 +7,7 @@ import tool.toolClass;
 import workLogics.Battle;
 import workLogics.Market;
 
-public class WorkFlow {
+public class WorkFlow {             // the main class to control the game, most of the game logic is in method controls()
     Scanner scanner = new Scanner(System.in);
     Scanner sc = new Scanner(System.in);
     Board board;

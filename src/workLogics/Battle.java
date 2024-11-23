@@ -10,7 +10,7 @@ import Items.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Battle {
+public class Battle {       // the class of battle, contains the logics like picking items, attacking by heroes and monsters
     CharacterMaps cmap;
     List<Monster> monsters;
     herosGroup herosgroup;

@@ -1,6 +1,6 @@
 package tool;
 
-public interface formats {
+public interface formats {          // some formats for printing
     String ArmoryFormatsDatas = "| %-20s | %-10d | %-10d | %-20d |";
     String ArmoryFormatsHeader = "| %-20s | %-10s | %-10s | %-20s |";
 

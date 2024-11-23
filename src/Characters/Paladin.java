@@ -1,7 +1,7 @@
 package Characters;
 import Colors.ColorsCodes;
 
-public class Paladin extends Human{
+public class Paladin extends Human{         // the class of the Paladin
 
     public Paladin(String name, int HP, int Strength, int Agility, int level, int EXP, int MP, int dexterity, int gold) {
         super(name, level * 10, Strength, Agility, level, EXP, MP, dexterity, gold, ColorsCodes.YELLOW);

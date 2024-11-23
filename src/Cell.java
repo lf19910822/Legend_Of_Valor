@@ -9,7 +9,7 @@ public class Cell {                 // A cell class that represent every cell on
     private int col;
     private String cellType;    // NIPCBK
 
-    private Deque<Piece> pieceStack;
+    private Deque<Piece> pieceStack;    // we use a stack to hold all pieces in a cell
 
     public Cell(int row, int col) {
         this.row = row;

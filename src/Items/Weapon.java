@@ -3,7 +3,7 @@ import tool.formats;
 
 
 
-public class Weapon extends Items{
+public class Weapon extends Items{  // the class of weapons
     private int damage;
     private int requiredHands;
 

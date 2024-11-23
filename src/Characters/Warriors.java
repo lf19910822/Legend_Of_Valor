@@ -1,7 +1,7 @@
 package Characters;
 import Colors.ColorsCodes;
 
-public class Warriors extends Human{
+public class Warriors extends Human{     // the class of the Paladin
     public Warriors(String name, int HP, int Strength, int Agility, int level, int EXP, int MP, int dexterity, int gold) {
         super(name, level * 100, Strength, Agility, level, EXP, MP, dexterity, gold, ColorsCodes.RED);
         this.Type = "Warrior";

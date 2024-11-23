@@ -3,7 +3,7 @@ import Colors.ColorsCodes;
 import Items.Spell;
 import workLogics.Formulas;
 
-public class Monster extends Character {
+public class Monster extends Character {        // the class of Monsters
     private int defense;
     protected String Type;
 

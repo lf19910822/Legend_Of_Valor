@@ -2,7 +2,7 @@ package Items;
 import tool.formats;
 import java.util.List;
 
-public class Potion extends Items{
+public class Potion extends Items{  // the class of potion
 
     private int attIncrease;
     private List<String> attAffect; // Strength/Health/Mana/HMSA/HMSADD

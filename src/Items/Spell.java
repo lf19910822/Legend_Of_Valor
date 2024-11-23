@@ -1,7 +1,7 @@
 package Items;
 import tool.formats;
 
-public class Spell extends Items {
+public class Spell extends Items {  // the class of spells
 
     private String spellType;    // "fire", "ice", "light"
     private int damage;

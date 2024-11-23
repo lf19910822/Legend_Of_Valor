@@ -3,7 +3,7 @@ package Characters;
 import Colors.ColorsCodes;
 
 
-public class Character {
+public class Character {        // the class of characters, including monsters and heroes
     private String name;
     private int HP;
     private int Strength;

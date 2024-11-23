@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ItemLists {
+public class ItemLists {    // class of all items. And it contains all lists of items
     List<Armory> armoryList = new ArrayList<>();
     List<Potion> potionList = new ArrayList<>();
     List<Spell> fireSpellList = new ArrayList<>();

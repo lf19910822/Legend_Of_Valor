@@ -1,7 +1,7 @@
 package places;
 import Colors.ColorsCodes;
 
-public class Piece{
+public class Piece{             // The class of all pieces
     protected String sign;
     String placeType;
     int row;

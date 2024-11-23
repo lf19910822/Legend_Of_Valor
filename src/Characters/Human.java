@@ -5,7 +5,7 @@ import Colors.ColorsCodes;
 import Items.*;
 import tool.toolClass;
 
-public class Human extends Character {
+public class Human extends Character {  //  the class of heroes, including some workflow like picking or dropping items
     private int EXP;
     private int MP;
     private int Dexterity;

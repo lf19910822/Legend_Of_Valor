@@ -4,8 +4,8 @@ import Colors.ColorsCodes;
 import java.util.ArrayList;
 import java.util.List;
 
-public class herosGroup extends Piece{
-    private List<Human> group;
+public class herosGroup extends Piece{  // a piece of heroesGroup, but in legends of Valor, all herosGroup
+    private List<Human> group;          // only contains one hero
     private int groupLength;
     private boolean isIncreasedByCellType;
 

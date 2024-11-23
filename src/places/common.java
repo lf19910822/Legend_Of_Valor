@@ -1,7 +1,7 @@
 package places;
 import Colors.ColorsCodes;
 
-public class common extends Piece{
+public class common extends Piece{          // a common piece. All stacks contain two common pieces in the bottom
     private double rateOfFight;
     public common( String sign, int row, int col, String color, double rateOfFight ){
         super(sign, row, col, color, "common");

@@ -3,7 +3,7 @@ import tool.toolClass;
 import java.util.HashMap;
 import java.util.List;
 
-public class CharacterMaps {
+public class CharacterMaps {    // the class of character maps, containing all maps of characters
 
     // Monsters
     private HashMap<String, Monster> dragonMap = new HashMap<>();

@@ -1,6 +1,6 @@
 package Items;
 
-public class fireSpell extends Spell{
+public class fireSpell extends Spell{ // fire spell
     fireSpell(String type, String name, int price, int level, int damage, int manaCost) {
         super(name, price, level, damage, manaCost, "fire");
     }

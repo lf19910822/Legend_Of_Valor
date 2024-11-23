@@ -4,7 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-public class toolClass {
+public class toolClass {                // class of tools. all tools are static.
     public static Scanner scanner = new Scanner(System.in);
 
     public static int[][] directions8 = {
