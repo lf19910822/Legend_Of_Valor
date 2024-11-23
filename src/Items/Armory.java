@@ -1,8 +1,10 @@
 package Items;
 import tool.formats;
 
+
 //The class of Armory
 public class Armory extends Items{
+
     private int damageReduction;
     public static String header = String.format(formats.ArmoryFormatsHeader, "Name", "Price", "Level", "Damage Reduction");
 

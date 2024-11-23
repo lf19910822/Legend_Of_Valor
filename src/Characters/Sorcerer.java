@@ -1,8 +1,10 @@
 package Characters;
 import Colors.ColorsCodes;
 
+
 ////extends the Hero class，has its own levelUp() method
 public class Sorcerer extends Human{
+
     public Sorcerer(String name, int HP, int Strength, int Agility, int level, int EXP, int MP, int dexterity, int gold) {
         super(name, level * 10, Strength, Agility, level, EXP, MP, dexterity, gold, ColorsCodes.BLUE);
         this.Type = "Sorcerer";

@@ -4,8 +4,10 @@ import tool.toolClass;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 //store information of all types of items
 public class ItemLists {
+
     List<Armory> armoryList = new ArrayList<>();
     List<Potion> potionList = new ArrayList<>();
     List<Spell> fireSpellList = new ArrayList<>();

@@ -7,8 +7,10 @@ import tool.toolClass;
 import workLogics.Battle;
 import workLogics.Market;
 
+
 //The class of game flow.
 public class WorkFlow {
+
     Scanner scanner = new Scanner(System.in);
     Scanner sc = new Scanner(System.in);
     Board board;

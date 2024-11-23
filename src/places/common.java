@@ -1,7 +1,9 @@
 package places;
 import Colors.ColorsCodes;
+
 //The class of a base place, who has a rate to give heroes group a fight.
 public class common extends Piece{
+
     private double rateOfFight;
     public common( String sign, int row, int col, String color, double rateOfFight ){
         super(sign, row, col, color, "common");

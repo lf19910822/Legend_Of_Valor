@@ -1,8 +1,10 @@
 package Characters;
 import Colors.ColorsCodes;
 
+
 //extends the Hero class，has its own levelUp() method
 public class Warriors extends Human{
+
     public Warriors(String name, int HP, int Strength, int Agility, int level, int EXP, int MP, int dexterity, int gold) {
         super(name, level * 100, Strength, Agility, level, EXP, MP, dexterity, gold, ColorsCodes.RED);
         this.Type = "Warrior";

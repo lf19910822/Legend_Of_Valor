@@ -3,11 +3,11 @@ import tool.toolClass;
 import java.util.HashMap;
 import java.util.List;
 
+
 //The class of all characters loaded from .txt file. We put all heroes and monsters in their own Map. As a result,
 //we have three maps for different monsters and three for heroes. All data from .txt files will be checked and
 //distinguished automatically.
 public class CharacterMaps {
-
     // Monsters
     private HashMap<String, Monster> dragonMap = new HashMap<>();
     private HashMap<String, Monster> ExoMap = new HashMap<>();
