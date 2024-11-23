@@ -1,7 +1,10 @@
 package places;
 import Colors.ColorsCodes;
 
-public class Piece{             // The class of all pieces
+
+//serves as a base representation for game elements placed on a board, encapsulating their visual symbol, position, type, and color.
+public class Piece{
+
     protected String sign;
     String placeType;
     int row;

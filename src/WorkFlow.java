@@ -7,7 +7,10 @@ import tool.toolClass;
 import workLogics.Battle;
 import workLogics.Market;
 
-public class WorkFlow {             // the main class to control the game, most of the game logic is in method controls()
+
+//The class of game flow.
+public class WorkFlow {
+
     Scanner scanner = new Scanner(System.in);
     Scanner sc = new Scanner(System.in);
     Board board;
@@ -24,7 +27,7 @@ public class WorkFlow {             // the main class to control the game, most 
     Battle battle;
 
     HashSet<String> possibleLocationSet;
-    static Map<Integer,String> monsterPositionMap;
+    static Map<Integer,String> monsterPositionMap; // The possible positions of the monster relative to the hero
     
     static {
         monsterPositionMap = new HashMap<>();
@@ -74,6 +77,7 @@ public class WorkFlow {             // the main class to control the game, most 
 
 
 
+    //Decide what kind of bonus hero can have in certain type of cell
     private void increaseByCellType( herosGroup hg, int rate ){
         if( hg.isIncreasedByCellType() ){               // if the hero has already been increased by cell type, do nothing
             return;
@@ -95,6 +99,7 @@ public class WorkFlow {             // the main class to control the game, most 
         }
     }
 
+    //Show the player what kind of bonus hero can have in certain type of cell
     private void printIncreasedByCellType( herosGroup hg, int rate ){
         String cellType = getCellType(hg);
         switch (cellType){
@@ -118,6 +123,8 @@ public class WorkFlow {             // the main class to control the game, most 
 
     }
 
+
+    //Controls the game flow by managing hero actions, processing player inputs, updating the board state, and checking win conditions in each round.
     public void controls(){
         boolean moveResult = true;
         boolean quit = false;
@@ -318,6 +325,7 @@ public class WorkFlow {             // the main class to control the game, most 
         this.monsterGroup.removeAll(this.monsterToRemove);
     }
 
+    //Handles the battle logic between a hero group and a monster, determining the flow based on who starts the battle, resolving the outcome, and updating the board state accordingly.
     private void battleLogic( herosGroup hg, aMonster monsterPiece, int start ){   // start: 1 hero start, 0 monster start
         this.battle = new Battle(hg, monsterPiece);
         Piece result;
@@ -340,6 +348,7 @@ public class WorkFlow {             // the main class to control the game, most 
         }
     }
 
+    //Facilitates the hero's attack process by identifying eligible monster targets within range, allowing the player to choose a target, initiating the battle sequence, and updating the game state based on the battle outcome.
     private boolean heroAttackFlow( herosGroup hg ){
         Iterator<aMonster> iterator = this.monsterGroup.iterator();
         List<aMonster> monsterPieces = getHeroAttackTargets(hg);
@@ -387,6 +396,7 @@ public class WorkFlow {             // the main class to control the game, most 
         return true;
     }
 
+    //When a monster leaves a cell, remove it from the stack
     private void popAMonsterPiece( aMonster monsterPiece ){
         int row = monsterPiece.getRow();
         int col = monsterPiece.getCol();
@@ -402,6 +412,7 @@ public class WorkFlow {             // the main class to control the game, most 
         }
     }
 
+    //print all monsters hero can attack
     private void printMonstersToBeAttacked(List<aMonster> monsterPieces){
         for( aMonster monsterPiece : monsterPieces ){
             Monster monster = monsterPiece.getMonster();
@@ -409,6 +420,7 @@ public class WorkFlow {             // the main class to control the game, most 
         }
     }
 
+    //get all monsters hero can attack
     private List<aMonster> getHeroAttackTargets( herosGroup hg ){
         int row = hg.getRow();
         int col = hg.getCol();
@@ -428,6 +440,7 @@ public class WorkFlow {             // the main class to control the game, most 
     }
 
 
+    //Handles the movement logic for all monsters in the game by iterating through the monster group, determining their movement targets, initiating battles if they encounter heroes, updating the game state based on the outcomes, and resolving the monsters' new positions on the board.
     private void AllMonstersMove(){
         for( aMonster monster : this.monsterGroup ){
             int row = monster.getRow();
@@ -570,6 +583,7 @@ public class WorkFlow {             // the main class to control the game, most 
         return true;
     }
 
+    //allows a hero to move to a space adjacent to a target hero in a different lane
     private boolean telePort(herosGroup hg){
         int heroIndex1=this.herosIndex%this.herosgroup.size();
         int heroIndex2=(this.herosIndex+1)%this.herosgroup.size();
@@ -608,6 +622,7 @@ public class WorkFlow {             // the main class to control the game, most 
         return true;
     }
 
+    //get all position a hero can move to using teleportation
     private List<heroPossiblePosition> getPossiblePosition(int heroIndex1,int heroIndex2){
         herosGroup hero1 = this.herosgroup.get(heroIndex1);
         herosGroup hero2 = this.herosgroup.get(heroIndex2);
@@ -629,6 +644,7 @@ public class WorkFlow {             // the main class to control the game, most 
         return result;
     }
 
+    //check all valid position around one hero
     private List<heroPossiblePosition>checkPossibleTelePortDestinationPerHero(int row, int col,int startIndex){
         List<heroPossiblePosition> result = new ArrayList<>();
         int index = startIndex;
@@ -645,6 +661,7 @@ public class WorkFlow {             // the main class to control the game, most 
         }
         return result;
     }
+    //check if a position can be the destination of teleportation
     private boolean canBeTeleportDestination(int row, int col){
         if(row < 0 || row >= this.board.boardRow || col < 0 || col >= this.board.boardCol){
             return false;
@@ -701,6 +718,7 @@ public class WorkFlow {             // the main class to control the game, most 
 
 
 
+    //Determines whether a hero can move to a specified cell on the board by checking the type of place they will encounter, resolving interactions with obstacles or monsters, updating the hero's position and attributes upon successful movement, and adjusting the state of the involved cells. Returns true if the move is successful, false otherwise.
     public boolean HeroMeetAPlace(herosGroup hg, int newRow, int newCol){
         Piece place = this.cells[newRow][newCol].peekTopPiece();
         int oldRow = hg.getRow();
@@ -716,6 +734,7 @@ public class WorkFlow {             // the main class to control the game, most 
             return false;
         }
 
+        //the cell hero is going to move to is obstacle
         if(newCell.getCellType().equals("\033[30mO\033[0m")){
             boolean choose=HeroMeetObstacle();
             if(choose){
@@ -749,6 +768,7 @@ public class WorkFlow {             // the main class to control the game, most 
         return true;
     }
 
+    //Ask the hero if he wants to remove obstacle
     private boolean HeroMeetObstacle(){
         System.out.println("You can not enter a space with type Obstacle, however, you can choose to use a turn to remove it. Do you want to do so? 1 YES, 0 NO");
         int choose = toolClass.getAnIntInput(0, 1);
@@ -808,6 +828,7 @@ public class WorkFlow {             // the main class to control the game, most 
         }
     }
 
+    //pick all heroes at the beginning of the game
     private void pickOneHeroFlow(){
         boolean quit = false;
         int count = 0;

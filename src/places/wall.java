@@ -1,7 +1,9 @@
 package places;
 import Colors.ColorsCodes;
 
-public class wall extends Piece{        // The class of wall piece
+//The class of wall piece
+public class wall extends Piece{
+
     public wall( String sign, int row, int col, String color ){
         super(sign, row, col, color, "wall");
     }

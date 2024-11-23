@@ -1,6 +1,9 @@
 package tool;
 
-public interface formats {          // some formats for printing
+
+//The interface contains many string formats. We use them when we need to print some information with format.
+public interface formats {
+
     String ArmoryFormatsDatas = "| %-20s | %-10d | %-10d | %-20d |";
     String ArmoryFormatsHeader = "| %-20s | %-10s | %-10s | %-20s |";
 

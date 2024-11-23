@@ -3,7 +3,9 @@ import tool.formats;
 
 
 
-public class Weapon extends Items{  // the class of weapons
+//represents a type of item in the game, encapsulating properties such as damage, required hands, and associated costs, with functionality for formatted display.
+public class Weapon extends Items{
+
     private int damage;
     private int requiredHands;
 

@@ -2,7 +2,10 @@ package Items;
 import tool.formats;
 import java.util.List;
 
-public class Potion extends Items{  // the class of potion
+
+// represents an item that enhances specific attributes of a character, storing information about the attribute increase amount and the affected attributes.
+public class Potion extends Items{
+
 
     private int attIncrease;
     private List<String> attAffect; // Strength/Health/Mana/HMSA/HMSADD

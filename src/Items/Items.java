@@ -1,6 +1,7 @@
 package Items;
 import tool.formats;
 
+//The parent class of all items. All items have name, price, level and type.
 public class Items {
     protected String name;
     protected int price;

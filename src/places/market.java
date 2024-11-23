@@ -2,6 +2,7 @@ package places;
 import Colors.ColorsCodes;
 import workLogics.Market;
 
+//The class of market piece.
 public class market extends Piece{
 
     private Market market;

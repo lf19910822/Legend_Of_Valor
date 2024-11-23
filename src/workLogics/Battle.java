@@ -10,7 +10,11 @@ import Items.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Battle {       // the class of battle, contains the logics like picking items, attacking by heroes and monsters
+
+//The class of battle, who handles the whole work flow of a battle. In each round, heroes can attack, use spell, pick
+//a weapon or armory, print information, use potion or keep waiting.
+public class Battle {
+
     CharacterMaps cmap;
     List<Monster> monsters;
     herosGroup herosgroup;

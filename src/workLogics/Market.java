@@ -6,6 +6,10 @@ import tool.toolClass;
 import java.util.ArrayList;
 import java.util.List;
 
+//The class of shopping, not the class of Market piece. This class handles the whole workflow of shopping with one hero.
+//The goods in Market are random and the shopping results will be kept during the game flow.
+//Class market is a market factory because every market on the map needs to be individual. In this way, we ensure that
+//they are different market instances.
 public class Market {
     ItemLists lists = new ItemLists();
 

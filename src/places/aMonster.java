@@ -3,7 +3,10 @@ package places;
 import Characters.Monster;
 import Colors.ColorsCodes;
 
-public class aMonster extends Piece{        // aMonster is a piece of monster
+
+//The class of monster piece.
+public class aMonster extends Piece{
+
     private Monster monster;                        // need to be set
     public aMonster( String sign, int row, int col, String color){
         super(sign, row, col, color, "monster");
