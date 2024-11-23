@@ -3,8 +3,7 @@ import Colors.ColorsCodes;
 import Items.Spell;
 import workLogics.Formulas;
 
-
-//The class of Monster. The Monsters’ HP depends on their levels.
+//The class of Monster. The Monsters' HP depends on their levels.
 public class Monster extends Character {
 
     private int defense;

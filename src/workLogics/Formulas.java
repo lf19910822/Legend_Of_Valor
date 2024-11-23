@@ -6,7 +6,7 @@ import Items.Weapon;
 import places.herosGroup;
 import tool.toolClass;
 
-//The class of most formulas. We calculate the damage, dodge chance, Exp and Gold after battle …… in this class.
+//The class of most formulas. We calculate the damage, dodge chance, Exp and Gold after battle in this class.
 //Most of formulas are able to accept different multiply powering to fit in different logics.
 public class Formulas {
     Formulas(){
