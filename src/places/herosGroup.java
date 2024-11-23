@@ -9,6 +9,7 @@ public class herosGroup extends Piece{
     private int groupLength;
     private boolean isIncreasedByCellType;
 
+    //The class of herosGroup piece, who contains a list of heroes in a game.
     public herosGroup( String sign, int row, int col, String color){
         super(sign, row, col, color, "group");
         group = new ArrayList<>();

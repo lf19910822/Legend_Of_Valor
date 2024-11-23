@@ -2,7 +2,7 @@ package Characters;
 
 import Colors.ColorsCodes;
 
-
+//The parent class of Monster and human, which contains some common attributes between human and monster.
 public class Character {
     private String name;
     private int HP;

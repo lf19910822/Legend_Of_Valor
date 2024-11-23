@@ -2,6 +2,7 @@ package Items;
 import tool.formats;
 import java.util.List;
 
+// represents an item that enhances specific attributes of a character, storing information about the attribute increase amount and the affected attributes.
 public class Potion extends Items{
 
     private int attIncrease;

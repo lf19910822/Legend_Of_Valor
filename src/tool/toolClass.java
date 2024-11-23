@@ -4,6 +4,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+//The class of all tools and every tool is static so we don’t need to new an instance to use these tools.
+//The tools can be divided into two groups: random tools and loading tools.
+//The random tools deal with random logic, like getting a random number or throwing a dice. Also, we can get a random
+//value from any map or list.
+//The loading tools deal with loading .txt files, like getting data line by line from a .txt file.
 public class toolClass {
     public static Scanner scanner = new Scanner(System.in);
 

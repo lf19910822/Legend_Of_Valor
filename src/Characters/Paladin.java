@@ -1,6 +1,7 @@
 package Characters;
 import Colors.ColorsCodes;
 
+//extends the Hero class，has its own levelUp() method
 public class Paladin extends Human{
 
     public Paladin(String name, int HP, int Strength, int Agility, int level, int EXP, int MP, int dexterity, int gold) {

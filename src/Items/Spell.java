@@ -1,6 +1,7 @@
 package Items;
 import tool.formats;
 
+//represents magical abilities with specific types, storing information about their damage, mana cost, and other related attributes.
 public class Spell extends Items {
 
     private String spellType;    // "fire", "ice", "light"

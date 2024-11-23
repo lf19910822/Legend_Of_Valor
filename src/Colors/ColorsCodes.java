@@ -1,5 +1,6 @@
 package Colors;
 
+//This interface contains a lot of color codes.
 public interface ColorsCodes {
     String RESET = "\033[0m";
     String RED = "\033[31m";
