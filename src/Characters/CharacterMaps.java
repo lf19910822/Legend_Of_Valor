@@ -22,25 +22,25 @@ public class CharacterMaps {
     }
 
     private void loadAllMonsterMaps(){
-        String filePath = "data\\Dragons.txt";
+        String filePath = "data/Dragons.txt";
         loadOneMonsterMap(filePath, dragonMap, "dragon");
 
-        filePath = "data\\Exoskeletons.txt";
+        filePath = "data/Exoskeletons.txt";
         loadOneMonsterMap(filePath, ExoMap, "exoskeletons");
 
-        filePath = "data\\Spirits.txt";
+        filePath = "data/Spirits.txt";
         loadOneMonsterMap(filePath, SpiritsMap, "spirits");
 
     }
 
     private void loadAllHumanMaps(){
-        String filePath = "data\\Warriors.txt";
+        String filePath = "data/Warriors.txt";
         loadOneHumanMap(filePath, warriorMap, "Warrior");
 
-        filePath = "data\\Paladins.txt";
+        filePath = "data/Paladins.txt";
         loadOneHumanMap(filePath, paladinMap, "Paladin");
 
-        filePath = "data\\Warriors.txt";
+        filePath = "data/Warriors.txt";
         loadOneHumanMap(filePath, sorcererMap, "Sorcerer");
     }
 

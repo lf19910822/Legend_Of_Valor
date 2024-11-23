@@ -23,7 +23,7 @@ public class ItemLists {
     }
 
     private void loadArmoryList(){
-        String filePath = "data\\Armory.txt";
+        String filePath = "data/Armory.txt";
         List<String[]> datas = toolClass.loadData(filePath);
         for( String[] line : datas ){
             String name = line[0];
@@ -36,7 +36,7 @@ public class ItemLists {
     }
 
     private void loadPotionList(){
-        String filePath = "data\\Potions.txt";
+        String filePath = "data/Potions.txt";
         List<String[]> datas = toolClass.loadData(filePath);
         for( String[] line : datas ){
             String name = line[0];
@@ -51,7 +51,7 @@ public class ItemLists {
     }
 
     private void loadOneSpell(String spellType, String fileName){
-        String filePath = "data\\"+ fileName +".txt";
+        String filePath = "data/"+ fileName +".txt";
         List<String[]> datas = toolClass.loadData(filePath);
         for( String[] line : datas ){
             String name = line[0];
@@ -74,7 +74,7 @@ public class ItemLists {
     }
 
     private void loadWeaponList(){
-        String filePath = "data\\Weaponry.txt";
+        String filePath = "data/Weaponry.txt";
         List<String[]> datas = toolClass.loadData(filePath);
         for( String[] line : datas ){
             String name = line[0];

@@ -463,8 +463,26 @@ public class Human extends Character {
     public boolean pickArmoryOrWeaponByOneHero(){
         Human hero = this;
         List<Items> ArmoryOrWeapon = new ArrayList<>();
+        List<Items> itemsToRemove = new ArrayList<>();
         ArmoryOrWeapon.addAll(hero.getWeaponList());
         ArmoryOrWeapon.addAll(hero.getArmoryList());
+
+        for( Items item : ArmoryOrWeapon){
+            if( item instanceof Weapon){
+                if( hero.getWeaponsOnHand().contains(item)){
+                    itemsToRemove.add(item);
+                }
+            } else if( item instanceof Armory){
+                if( hero.getArmoryOnBody().contains(item)){
+                    itemsToRemove.add(item);
+                }
+            }
+        }
+
+        for( Items item : itemsToRemove){
+            ArmoryOrWeapon.remove(item);
+        }
+
         if( ArmoryOrWeapon.size() <= 0 ){
             System.out.println("Hero " + hero.getName() + " has no weapon or armory available");
             toolClass.pauseFlow();

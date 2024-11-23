@@ -861,17 +861,7 @@ public class WorkFlow {
 
 
     public static void welcomeWords(){
-        System.out.println(" Legends: Monsters and Heroes ");
-        System.out.println("Welcome, brave heroes, to a land shrouded in mystery and danger. ");
-        System.out.println("You, marked as " + ColorsCodes.BLUE + "P" + ColorsCodes.RESET + " on the map, " +
-                "travel as a united group of adventurers, bound by fate to face daunting challenges. ");
-        System.out.println("Beware the " + ColorsCodes.RED + "F" + ColorsCodes.RESET + " symbols----these mark encounters " +
-                "where fierce enemies await, ready to test your strength.");
-        System.out.println("Seek the " + ColorsCodes.YELLOW + "M" + ColorsCodes.RESET + " for safe havens; " +
-                "these are bustling markets where you can trade, " +
-                "gather supplies, and gain much-needed respite.");
-        System.out.println("As you journey, you’ll encounter the impassable " + ColorsCodes.BLACK + "#" + ColorsCodes.RESET +
-                " walls, which block your path, forcing you to navigate wisely. Forge ahead with courage, for glory and honor await!");
+        System.out.println("********************************Legends of valor********************************");
         toolClass.pauseFlow();
     }
 
