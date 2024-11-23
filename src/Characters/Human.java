@@ -5,8 +5,10 @@ import Colors.ColorsCodes;
 import Items.*;
 import tool.toolClass;
 
+
 //The parent class of all three types of heroes. This class deals with items and levels
 public class Human extends Character {
+
     private int EXP;
     private int MP;
     private int Dexterity;

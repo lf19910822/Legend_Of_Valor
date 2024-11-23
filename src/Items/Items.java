@@ -10,7 +10,7 @@ public class Items {
 
     public static String sellingHeader = String.format(formats.sellingFormatsHeader, "Name", "Type", "Price");
 
-    Items(String name, int price, int level, String Type ) {
+    Items(String name, int price, int level, String Type ) {      // The class of items
         this.name = name;
         this.price = price;
         this.level = level;
