@@ -147,10 +147,10 @@ multipliers in Formulas class.
 6. Music. Please TAKE OFF YOUR HEADPHONES!!!.
 
 Patterns:
-1. We use Facade pattern to handle the heroes loading process. If we want to add a new type of hero, we only need to add 
+1. We use Factory pattern to handle the heroes loading process. If we want to add a new type of hero, we only need to add 
 the .txt file and a new class for the hero.
-2. We use facade pattern in CharacterMaps and itemLists. Both of them provide a unified interface to get the data from .txt files.
-3. We use singleton pattern in AudioPlayer. We only need one instance of AudioPlayer to play music.
+2. We use Facade pattern in CharacterMaps and itemLists. Both of them provide a unified interface to get the data from .txt files.
+3. We use Singleton pattern in AudioPlayer. We only need one instance of AudioPlayer to play music.
 ## How to compile and run
 ---------------------------------------------------------------------------
 Navigate to the directory "hw5" after unzipping the files

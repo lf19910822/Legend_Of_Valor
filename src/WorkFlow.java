@@ -253,6 +253,7 @@ public class WorkFlow {
                     boolean battleResult = heroAttackFlow(currentHero);
                     if( !battleResult ){
                         reSelect = false;
+                        toolClass.pauseFlow();
                         continue;
                     }
                     break;
@@ -883,7 +884,19 @@ public class WorkFlow {
 
 
     public static void welcomeWords(){
-        System.out.println("********************************Legends of valor********************************");
+        System.out.println("******************************** Legends of valor ********************************");
+        String introduction =
+                "Welcome to Legends of valor!\n\n" +
+                        "Game Rules:\n" +
+                        "1. Heroes can enter the market within N squares.\n" +
+                        "2. Monsters can move down, left, or right.\n" +
+                        "3. Victory: Any hero reaches the enemy's N square.\n" +
+                        "   Defeat: Any monster reaches our N square.\n" +
+                        "4. New monsters may spawn every three turns.\n" +
+                        "5. Heroes will be blocked by monsters.\n" +
+                        "6. Heroes can attack monsters within 8 adjacent squares.\n\n" +
+                        "Prepare yourself for an epic battle of strategy and bravery!";
+        System.out.println(introduction);
         toolClass.pauseFlow();
     }
 
