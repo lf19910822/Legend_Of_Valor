@@ -1,5 +1,6 @@
 import Characters.CharacterMaps;
 import Characters.Human;
+import music.AudioPlayer;
 import places.aMonster;
 import places.herosGroup;
 import tool.toolClass;
@@ -9,8 +10,12 @@ import java.io.IOException;
 
 public class test {
     public static void main(String[] args) throws IOException, InterruptedException {
-        WorkFlow wf = new WorkFlow();
-        wf.startGame();
+
+//        AudioPlayer audioPlayer = new AudioPlayer();
+//        audioPlayer.load();
+//        while(true){
+//            audioPlayer.loop();
+//        }
 
 //        CharacterMaps cm = new CharacterMaps();
 //

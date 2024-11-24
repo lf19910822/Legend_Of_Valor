@@ -1,9 +1,16 @@
+import music.AudioPlayer;
+
 import java.io.IOException;
 
 public class Main {                     // the main function
     public static void main(String[] args) throws IOException, InterruptedException {
-        WorkFlow wf = new WorkFlow();
-        wf.startGame();
+        while(true){
+            AudioPlayer.play();
+            WorkFlow wf = new WorkFlow();
+            wf.startGame();
+            break;
+        }
+
     }
 
 
