@@ -1,5 +1,4 @@
 package Characters;
-
 import Colors.ColorsCodes;
 
 

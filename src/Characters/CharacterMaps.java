@@ -18,10 +18,15 @@ public class CharacterMaps {
     private HashMap<String, Human> paladinMap = new HashMap<>();
     private HashMap<String, Human> sorcererMap = new HashMap<>();
 
+    // humanFactory
+    private humanFactory humanfactory;
+
 
     public CharacterMaps() {
+        this.humanfactory = humanFactory.getInstance();
         loadAllMonsterMaps();
-        loadAllHumanMaps();
+        loadAllHumans();
+//        loadAllHumanMaps();
     }
 
     private void loadAllMonsterMaps(){
@@ -33,19 +38,15 @@ public class CharacterMaps {
 
         filePath = "data/Spirits.txt";
         loadOneMonsterMap(filePath, SpiritsMap, "spirits");
-
     }
 
-    private void loadAllHumanMaps(){
-        String filePath = "data/Warriors.txt";
-        loadOneHumanMap(filePath, warriorMap, "Warrior");
-
-        filePath = "data/Paladins.txt";
-        loadOneHumanMap(filePath, paladinMap, "Paladin");
-
-        filePath = "data/Warriors.txt";
-        loadOneHumanMap(filePath, sorcererMap, "Sorcerer");
+    public void loadAllHumans(){
+        HashMap<String, Human> humanMap;
+        this.warriorMap = this.humanfactory.getMapByHeroType("Warriors");
+        this.paladinMap = this.humanfactory.getMapByHeroType("Paladins");
+        this.sorcererMap = this.humanfactory.getMapByHeroType("Sorcerers");
     }
+
 
     private void loadOneMonsterMap( String path, HashMap<String, Monster> map, String monsterType){
         List<String[]> datas = toolClass.loadData(path);
@@ -56,14 +57,6 @@ public class CharacterMaps {
         }
     }
 
-    private void loadOneHumanMap( String path, HashMap<String, Human> map, String career){
-        List<String[]> datas = toolClass.loadData(path);
-        for( String[] line : datas ){
-            String name = line[0];
-            Human human = createHumanInstanceByLine(line, career);
-            map.put(name, human);
-        }
-    }
 
     private Monster createMonsterInstanceByLine(String[] line, String monsterType){
         String name = line[0];
@@ -76,30 +69,6 @@ public class CharacterMaps {
         Monster monster = new Monster(name, HP, level, damage, defense, dodge, monsterType);
         return monster;
     }
-
-
-    private Human createHumanInstanceByLine(String[] line, String career){
-        String name = line[0];
-        int HP = Integer.parseInt(line[1]);
-        int MP = Integer.parseInt(line[2]);
-        int Strength = Integer.parseInt(line[3]);
-        int Agility = Integer.parseInt(line[4]);
-        int dexterity = Integer.parseInt(line[5]);
-        int gold = Integer.parseInt(line[6]);
-        int EXP = Integer.parseInt(line[7]);
-        int level = 1;
-
-        if( career.equals("Warrior")){
-            return new Warriors(name, HP, Strength, Agility, level, EXP, MP, dexterity, gold);
-        } else if( career.equals("Paladin")){
-            return new Paladin(name, HP, Strength, Agility, level, EXP, MP, dexterity, gold);
-        } else if( career.equals("Sorcerer")){
-            return new Sorcerer(name, HP, Strength, Agility, level, EXP, MP, dexterity, gold);
-        }
-        return null;
-    }
-
-
 
     public HashMap<String, Monster> getDragonMap() {
         return dragonMap;

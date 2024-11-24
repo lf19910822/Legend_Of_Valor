@@ -134,17 +134,23 @@
 
 ## Notes
 ---------------------------------------------------------------------------
-1. All heroes and monsters are loaded from .txt files and put into their own maps.
+1. All heroes and monsters are loaded from .txt files and put into their own maps. 
 2. Every element on the map, like hero, monster, wall, market, is a piece. And every cell on the map is a piece stack.
 For example: if a piece moves, we pop it out from the former cell and push it into the new cell. The former place on
 the former cell will get back to the top of stack automatically. In this way, we can easily move any piece on the map and 
 stack different items on the same cell.
-3. We use facade pattern in CharacterMaps and itemLists. Both of them provide a unified interface to get the data from .txt files.
-4. Monsters can not only move downward but also move left and right, allowing them to potentially bypass heroes, thereby 
+3. Monsters can not only move downward but also move left and right, allowing them to potentially bypass heroes, thereby 
 increasing the game's difficulty.
-5. Most logics are implemented in Formulas class. We can easily change the formulas of damage, defense, exp, etc. by changing the
+4. Most logics are implemented in Formulas class. We can easily change the formulas of damage, defense, exp, etc. by changing the
 multipliers in Formulas class.
-6. We have colorful terminal output. We use the interface ColorsCodes to handle colors.
+5. We have colorful terminal output. We use the interface ColorsCodes to handle colors.
+6. Music. Please TAKE OFF YOUR HEADPHONES!!!.
+
+Patterns:
+1. We use Facade pattern to handle the heroes loading process. If we want to add a new type of hero, we only need to add 
+the .txt file and a new class for the hero.
+2. We use facade pattern in CharacterMaps and itemLists. Both of them provide a unified interface to get the data from .txt files.
+3. We use singleton pattern in AudioPlayer. We only need one instance of AudioPlayer to play music.
 ## How to compile and run
 ---------------------------------------------------------------------------
 Navigate to the directory "hw5" after unzipping the files
