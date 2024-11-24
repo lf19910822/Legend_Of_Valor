@@ -739,6 +739,7 @@ public class WorkFlow {
             boolean choose=HeroMeetObstacle();
             if(choose){
                 newCell.setCellType(ColorsCodes.WHITE+"P"+ColorsCodes.RESET);
+                return true;
             }else{
                 return false;
             }
