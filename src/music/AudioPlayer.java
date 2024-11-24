@@ -16,7 +16,7 @@ public class AudioPlayer {              // a player to play music
         try {
             File audioFile = new File(filePath);
             if (!audioFile.exists()) {
-                System.out.println("missing data：" + filePath);
+                System.out.println("missing data:" + filePath);
                 return;
             }
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
