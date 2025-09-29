@@ -1,13 +1,13 @@
 # CS611-Assignment 1
 ## Tic Tac Toe // Order and Chaos
 ---------------------------------------------------------------------------
-- Name: Lu, Fan
-- Email: lf1991@bu.edu
-- Student ID: U44379300
+- Name: *Edited*
+- Email: *Edited*
+- Student ID: *Edited*
 
-- Name: Yu, Chenxu
-- Email: yuchenxu@bu.edu
-- Student ID: U06437190
+- Name: *Edited*
+- Email: *Edited*
+- Student ID: *Edited*
 
 ## Files
 ---------------------------------------------------------------------------
